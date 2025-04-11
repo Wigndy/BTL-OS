@@ -346,6 +346,8 @@ int libread(
 
   /* TODO update result of reading action*/
   //destination 
+  if (data == '\0') *destination = -1;
+  else *destination = data;
 #ifdef IODUMP
   printf("read region=%d offset=%d value=%d\n", source, offset, data);
 #ifdef PAGETBL_DUMP
