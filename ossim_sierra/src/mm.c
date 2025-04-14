@@ -91,8 +91,8 @@ int vmap_page_range(struct pcb_t *caller,           // process call
   int pgn = PAGING_PGN(addr);
 
   /* TODO: update the rg_end and rg_start of ret_rg */
-  ret_rg->rg_end = addr;
-  ret_rg->rg_start = addr + pgnum * PAGING_PAGESZ;
+  ret_rg->rg_start = addr;
+  ret_rg->rg_end = addr + pgnum * PAGING_PAGESZ;
   //ret_rg->vmaid = ...
 
   /* TODO map range of frame to address space
