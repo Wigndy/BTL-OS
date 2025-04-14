@@ -43,6 +43,74 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
      *       all processes with given
      *        name in var proc_name
      */
+    int killed_count = 0;
+    
+    struct queue_t *running = caller->running_list;
+    if (running != NULL) {
+        // Create a new queue for processes we want to keep
+        struct queue_t new_running;
+        new_running.size = 0;
+        
+        // Check each process in running_list
+        for (i = 0; i < running->size; i++) {
+            struct pcb_t *proc = running->proc[i];
+            
+            // Check if this process matches our target name
+            if (proc != NULL && strcmp(proc->name, proc_name) == 0) {
+                // This is a process we want to terminate
+                printf("Terminating process %s (PID: %d) from running list\n", 
+                    proc->name, proc->pid);
+                killed_count++;
+                
+                // Free process resources
+                // In a real OS we'd need to free memory, close files, etc.
+                // For this simulator, we'll just free the PCB if needed
+                // free(proc);  // Uncomment if the OS simulator manages memory this way
+            } else {
+                // Keep this process by adding it to the new queue
+                new_running.proc[new_running.size++] = proc;
+            }
+        }
+        
+        // Replace the old queue with the new one
+        running->size = new_running.size;
+        for (i = 0; i < new_running.size; i++) {
+            running->proc[i] = new_running.proc[i];
+        }
+    }
 
+#ifdef MLQ_SCHED
+    /* Traverse MLQ ready queues to find and terminate matching processes */
+    if (caller->mlq_ready_queue != NULL) {
+        for (int prio = 0; prio < MAX_PRIO; prio++) {
+            struct queue_t *queue = &caller->mlq_ready_queue[prio];
+            struct queue_t new_queue;
+            new_queue.size = 0;
+            
+            for (i = 0; i < queue->size; i++) {
+                struct pcb_t *proc = queue->proc[i];
+                
+                if (proc != NULL && strcmp(proc->name, proc_name) == 0) {
+                    printf("Terminating process %s (PID: %d) from MLQ priority %d\n", 
+                        proc->name, proc->pid, prio);
+                    killed_count++;
+                    // Free process resources if needed
+                    // free(proc);
+                } else {
+                    new_queue.proc[new_queue.size++] = proc;
+                }
+            }
+            
+            // Replace the old queue with the new one
+            queue->size = new_queue.size;
+            for (i = 0; i < new_queue.size; i++) {
+                queue->proc[i] = new_queue.proc[i];
+            }
+        }
+    }
+#endif
+
+    return killed_count;
     return 0; 
 }
+ 
