@@ -136,41 +136,37 @@
   */
  int __free(struct pcb_t *caller, int vmaid, int rgid)
  {
-   struct vm_rg_struct *rgnode = (struct vm_rg_struct *)malloc(sizeof(struct vm_rg_struct));
- 
-   // Dummy initialization for avoding compiler dummay warning
-   // in incompleted TODO code rgnode will overwrite through implementing
-   // the manipulation of rgid later
- 
-   if(rgid < 0 || rgid > PAGING_MAX_SYMTBL_SZ)
-     return -1;
-   pthread_mutex_lock(&mmvm_lock);
- 
- 
-   struct vm_rg_struct *rg = &caller->mm->symrgtbl[rgid];
-   if(rg->rg_start >= rg->rg_end){
-     pthread_mutex_unlock(&mmvm_lock);
-     return -1;
-   }  
-   /* TODO: Manage the collect freed region to freerg_list */
-   // struct vm_area_struct *vma = get_vma_by_num(caller->mm, vmaid);
-   // if (!vma){
-   //     pthread_mutex_unlock(&mmvm_lock);
-   //     return -1;
-   // }
- 
-   rgnode->rg_start = rg->rg_start;
-   rgnode->rg_end = rg->rg_end;
-   rgnode->rg_next = NULL;
- 
-   rg->rg_start = 0;
-   rg->rg_end = 0;
-   rg->rg_next = NULL;
-   /*enlist the obsoleted memory region */
-   enlist_vm_freerg_list(caller->mm, rgnode);
-   pthread_mutex_unlock(&mmvm_lock);
- 
-   return 0;
+  struct vm_rg_struct *rgnode;
+
+  // Dummy initialization for avoding compiler dummay warning
+  // in incompleted TODO code rgnode will overwrite through implementing
+  // the manipulation of rgid later
+
+  if(rgid < 0 || rgid > PAGING_MAX_SYMTBL_SZ)
+    return -1;
+  pthread_mutex_lock(&mmvm_lock);
+
+
+  rgnode = &caller->mm->symrgtbl[rgid];
+  if(rgnode->rg_start >= rgnode->rg_end){
+    pthread_mutex_unlock(&mmvm_lock);
+    return -1;
+  }  
+  /* TODO: Manage the collect freed region to freerg_list */
+  // struct vm_area_struct *vma = get_vma_by_num(caller->mm, vmaid);
+  // if (!vma){
+  //     pthread_mutex_unlock(&mmvm_lock);
+  //     return -1;
+  // }
+  
+
+  /*enlist the obsoleted memory region */
+  enlist_vm_freerg_list(caller->mm, rgnode);
+  rgnode->rg_start = 0;
+  rgnode->rg_end = 0;
+  pthread_mutex_unlock(&mmvm_lock);
+
+  return 0;
  }
  
  /*liballoc - PAGING-based allocate a region memory
