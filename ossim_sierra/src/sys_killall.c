@@ -41,6 +41,8 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
      */
     //caller->running_list
     //caller->mlq_ready_queue    
+
+
     #ifdef MLQ_SCHED
         for (int mlq_index = 0; mlq_index < MAX_PRIO; ++mlq_index) {
             struct queue_t *ready_queue = &caller->mlq_ready_queue[mlq_index];
@@ -67,7 +69,7 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
                 }
 
                 if (same_name == 1) {
-                    remove_proc(ready_queue, queue_index);
+                    // remove_proc(ready_queue, queue_index);
                     if (proc->page_table != NULL) free(proc->page_table);
                     if (proc->code != NULL) {
                         if (proc->code->text != NULL) free(proc->code->text);
