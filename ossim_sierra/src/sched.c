@@ -51,6 +51,17 @@ struct pcb_t * get_mlq_proc(void) {
 	/*TODO: get a process from PRIORITY [ready_queue].
 	 * Remember to use lock to protect the queue.
 	 * */
+	pthread_mutex_lock(&queue_lock);
+	
+	for (int prio = 0; prio != MAX_PRIO; ++prio) {
+		if (!empty(&mlq_ready_queue[prio]) && slot[prio]) {
+			--slot[prio];
+			proc = dequeue(&mlq_ready_queue[prio]);
+			break;
+		}
+	}
+
+	pthread_mutex_unlock(&queue_lock);
 	return proc;	
 }
 
@@ -76,7 +87,9 @@ void put_proc(struct pcb_t * proc) {
 	proc->running_list = & running_list;
 
 	/* TODO: put running proc to running_list */
-
+	pthread_mutex_lock(&queue_lock);
+	enqueue(&running_list, proc);
+	pthread_mutex_unlock(&queue_lock);	
 
 	return put_mlq_proc(proc);
 }
@@ -87,6 +100,9 @@ void add_proc(struct pcb_t * proc) {
 	proc->running_list = & running_list;
 
 	/* TODO: put running proc to running_list */
+	pthread_mutex_lock(&queue_lock);
+	enqueue(&running_list, proc);
+	pthread_mutex_unlock(&queue_lock);	
 
 	return add_mlq_proc(proc);
 }
@@ -96,6 +112,10 @@ struct pcb_t * get_proc(void) {
 	/*TODO: get a process from [ready_queue].
 	 * Remember to use lock to protect the queue.
 	 * */
+	pthread_mutex_lock(&queue_lock);
+	if (!empty(&ready_queue))
+		proc = dequeue(&ready_queue);
+	pthread_mutex_unlock(&queue_lock);	
 	return proc;
 }
 
@@ -104,6 +124,9 @@ void put_proc(struct pcb_t * proc) {
 	proc->running_list = & running_list;
 
 	/* TODO: put running proc to running_list */
+	pthread_mutex_lock(&queue_lock);
+	enqueue(&running_list, proc);
+	pthread_mutex_unlock(&queue_lock);	
 
 	pthread_mutex_lock(&queue_lock);
 	enqueue(&run_queue, proc);
@@ -112,9 +135,12 @@ void put_proc(struct pcb_t * proc) {
 
 void add_proc(struct pcb_t * proc) {
 	proc->ready_queue = &ready_queue;
-	proc->running_list = & running_list;
+	proc->running_list = & running_list;`
 
 	/* TODO: put running proc to running_list */
+	pthread_mutex_lock(&queue_lock);
+	enqueue(&running_list, proc);
+	pthread_mutex_unlock(&queue_lock);	
 
 	pthread_mutex_lock(&queue_lock);
 	enqueue(&ready_queue, proc);
