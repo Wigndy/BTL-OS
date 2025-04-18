@@ -32,7 +32,7 @@ static pthread_mutex_t mmvm_lock = PTHREAD_MUTEX_INITIALIZER;
 int enlist_vm_freerg_list(struct mm_struct *mm, struct vm_rg_struct *rg_elmt)
 {
   struct vm_rg_struct *rg_node = mm->mmap->vm_freerg_list;
-
+  
   if (rg_elmt->rg_start >= rg_elmt->rg_end)
     return -1;
 
@@ -41,7 +41,6 @@ int enlist_vm_freerg_list(struct mm_struct *mm, struct vm_rg_struct *rg_elmt)
 
   /* Enlist the new region */
   mm->mmap->vm_freerg_list = rg_elmt;
-
   return 0;
 }
 
@@ -80,6 +79,7 @@ int __alloc(struct pcb_t *caller, int vmaid, int rgid, int size, int *alloc_addr
 
   if (get_free_vmrg_area(caller, vmaid, size, &rgnode) == 0)
   {
+    printf("rgit %d = %d\n", rgid, rgnode.rg_start);
     caller->mm->symrgtbl[rgid].rg_start = rgnode.rg_start;
     caller->mm->symrgtbl[rgid].rg_end = rgnode.rg_end;
  
@@ -117,6 +117,7 @@ int __alloc(struct pcb_t *caller, int vmaid, int rgid, int size, int *alloc_addr
   
   if (get_free_vmrg_area(caller, vmaid, size, &rgnode) == 0)
   {
+    printf("rgit %d = %d\n", rgid, rgnode.rg_start);
     caller->mm->symrgtbl[rgid].rg_start = rgnode.rg_start;
     caller->mm->symrgtbl[rgid].rg_end = rgnode.rg_end;
  
@@ -158,8 +159,10 @@ int __free(struct pcb_t *caller, int vmaid, int rgid)
   struct vm_rg_struct * rgit = get_vma_by_num(caller->mm, vmaid)->vm_freerg_list;
 
   /*enlist the obsoleted memory region */
-  enlist_vm_freerg_list(&caller->mm, &caller->mm->symrgtbl[rgid]);
-
+  //caller->mm->symrgtbl[rgid].rg_next = caller->mm->mmap->vm_freerg_list;
+  //caller->mm->mmap->vm_freerg_list = &caller->mm->symrgtbl[rgid];
+  enlist_vm_freerg_list(caller->mm, &caller->mm->symrgtbl[rgid]);
+ 
   pthread_mutex_unlock(&mmvm_lock);
   return 0;
 }
@@ -214,6 +217,7 @@ int libfree(struct pcb_t *proc, uint32_t reg_index)
 int pg_getpage(struct mm_struct *mm, int pgn, int *fpn, struct pcb_t *caller)
 {
   uint32_t pte = mm->pgd[pgn];
+  printf("Page: %d -> frame: %d\n", pgn, PAGING_FPN(mm->pgd[pgn]));
 
   if (!PAGING_PAGE_PRESENT(pte))
   { /* Page is not online, make it actively living */
@@ -333,7 +337,7 @@ int pg_setval(struct mm_struct *mm, int addr, BYTE value, struct pcb_t *caller)
   int pgn = PAGING_PGN(addr);
   int off = PAGING_OFFST(addr);
   int fpn;
-
+  printf("Adress: %d\n",  addr);
   /* Get the page to MEMRAM, swap from MEMSWAP if needed */
   if (pg_getpage(mm, pgn, &fpn, caller) != 0)
     return -1; /* invalid page access */
@@ -393,6 +397,7 @@ int libread(
 
   /* TODO update result of reading action*/
   //destination 
+  printf("===== PHYSICAL MEMORY AFTER READING =====\n");
 #ifdef IODUMP
   printf("read region=%d offset=%d value=%d\n", source, offset, data);
 #ifdef PAGETBL_DUMP
@@ -400,7 +405,7 @@ int libread(
 #endif
   MEMPHY_dump(proc->mram);
 #endif
-
+  printf("================================================================\n");
   return val;
 }
 
@@ -432,6 +437,8 @@ int libwrite(
     uint32_t destination, // Index of destination register
     uint32_t offset)
 {
+  printf("===== PHYSICAL MEMORY AFTER WRITING =====\n");
+  int ans = __write(proc, 0, destination, offset, data);
 #ifdef IODUMP
   printf("write region=%d offset=%d value=%d\n", destination, offset, data);
 #ifdef PAGETBL_DUMP
@@ -439,8 +446,8 @@ int libwrite(
 #endif
   MEMPHY_dump(proc->mram);
 #endif
-
-  return __write(proc, 0, destination, offset, data);
+  printf("================================================================\n");
+  return ans;
 }
 
 /*free_pcb_memphy - collect all memphy of pcb
