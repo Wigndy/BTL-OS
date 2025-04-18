@@ -79,7 +79,6 @@ int __alloc(struct pcb_t *caller, int vmaid, int rgid, int size, int *alloc_addr
 
   if (get_free_vmrg_area(caller, vmaid, size, &rgnode) == 0)
   {
-    printf("rgit %d = %d\n", rgid, rgnode.rg_start);
     caller->mm->symrgtbl[rgid].rg_start = rgnode.rg_start;
     caller->mm->symrgtbl[rgid].rg_end = rgnode.rg_end;
  
@@ -117,7 +116,6 @@ int __alloc(struct pcb_t *caller, int vmaid, int rgid, int size, int *alloc_addr
   
   if (get_free_vmrg_area(caller, vmaid, size, &rgnode) == 0)
   {
-    printf("rgit %d = %d\n", rgid, rgnode.rg_start);
     caller->mm->symrgtbl[rgid].rg_start = rgnode.rg_start;
     caller->mm->symrgtbl[rgid].rg_end = rgnode.rg_end;
  
@@ -156,7 +154,7 @@ int __free(struct pcb_t *caller, int vmaid, int rgid)
   pthread_mutex_lock(&mmvm_lock);
 
   /* TODO: Manage the collect freed region to freerg_list */
-  struct vm_rg_struct * rgit = get_vma_by_num(caller->mm, vmaid)->vm_freerg_list;
+  //struct vm_rg_struct * rgit = get_vma_by_num(caller->mm, vmaid)->vm_freerg_list;
 
   /*enlist the obsoleted memory region */
   //caller->mm->symrgtbl[rgid].rg_next = caller->mm->mmap->vm_freerg_list;
@@ -199,12 +197,13 @@ int libfree(struct pcb_t *proc, uint32_t reg_index)
   /* TODO Implement free region */
 
   /* By default using vmaid = 0 */
-  return __free(proc, 0, reg_index);
+  int ans = __free(proc, 0, reg_index);
   
   printf("===== PHYSICAL MEMORY AFTER DEALLOCATION =====\n");
-  printf("PID=%d - Region=? - Address=%d - Size=%d byte\n", proc->pid);
+  printf("PID=%d - Region=%ld - Address=%ld - Size=%ld byte\n", proc->pid, proc->mm->mmap->vm_id, proc->mm->symrgtbl[reg_index].rg_start, proc->mm->symrgtbl[reg_index].rg_end - proc->mm->symrgtbl[reg_index].rg_start);
   print_pgtbl(proc, 0, -1);
   printf("================================================================\n");
+  return ans;
 }
 
 /*pg_getpage - get the page in ram
@@ -276,7 +275,7 @@ int pg_getpage(struct mm_struct *mm, int pgn, int *fpn, struct pcb_t *caller)
     //mm->pgd[pgn];
     //pte_set_fpn();
 
-    pte_set_swap(&mm->pgd[vicpgn], &caller->active_mswp_id, tgtfpn);
+    pte_set_swap(&mm->pgd[vicpgn], caller->active_mswp_id, tgtfpn);
     pte_set_fpn(&caller->mm->pgd[pgn], vicfpn);
 
     enlist_pgn_node(&caller->mm->fifo_pgn,pgn);
