@@ -21,28 +21,31 @@ struct pcb_t * dequeue(struct queue_t * q) {
          * in the queue [q] and remember to remove it from q
          * */
         if (q == NULL || q->size == 0) return NULL;
-        struct pcb_t *res = NULL;
-        uint32_t highest_prio = 999999, proc_prio;
-        int key = q->size;
-        // Find pcb has highest prio -> res, highest_prio; key to remove that pcb from q
-        for (int i = 0, size = q->size; i < size; ++i) {
-                if (q->proc[i] == NULL) continue;
+        
+        int MAX_INDEX = 0;
         #ifdef MLQ_SCHED
-                proc_prio = q->proc[i]->prio;
-        #else
-                proc_prio = q->proc[i]->priority;
-        #endif
-                if (proc_prio < highest_prio) {
-                        highest_prio = proc_prio;
-                        key = i;
-                        res = q->proc[i];
+                uint32_t MAX = q->proc[0]->prio;
+                for (int i = 1; i < q->size; i++) {
+                        if (q->proc[i]->prio < MAX) {
+                                MAX = q->proc[i]->prio;
+                                MAX_INDEX = i;
+                        }
                 }
+        #else
+                uint32_t MAX = q->proc[0]->priority;
+                for (int i = 1; i < q->size; i++) {
+                        if (q->proc[i]->priority < MAX) {
+                                MAX = q->proc[i]->priority;
+                                MAX_INDEX = i;
+                        }
+                }
+        #endif
+        struct pcb_t * ret_proc = q->proc[MAX_INDEX];
+        for (int i = MAX_INDEX; i < q->size - 1; i++) {
+                q->proc[i] = q->proc[i + 1];
         }
-
-        for(int i = key + 1, size = q->size; i < size; ++i)
-                q->proc[i - 1] = q->proc[i];
-        if (res != NULL) q->size--;
-	return res;
+        q->size--;
+        return ret_proc;
 }
 
 // void remove_proc(struct queue_t * q, int index) {
