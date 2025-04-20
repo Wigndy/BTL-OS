@@ -56,10 +56,17 @@ static void * cpu_routine(void * args) {
 			/* No process is running, the we load new process from
 		 	* ready queue */
 			proc = get_proc();
-			if (proc == NULL) {
-                           next_slot(timer_id);
-                           continue; /* First load failed. skip dummy load */
-                        }
+			if (proc == NULL) 
+			{
+				next_slot(timer_id);
+				continue; /* First load failed. skip dummy load */
+			}
+#ifdef CFS_SCHED
+            // Calculate time slice based on process weight
+            time_left = calc_time_slice(proc);
+#else
+            time_left = time_slot;
+#endif
 		}else if (proc->pc == proc->code->size) {
 			/* The porcess has finish it job */
 			printf("\tCPU %d: Processed %2d has finished\n",
@@ -126,8 +133,17 @@ static void * ld_routine(void * args) {
 		proc->mswp = mswp;
 		proc->active_mswp = active_mswp;
 #endif
-		printf("\tLoaded a process at %s, PID: %d PRIO: %ld\n",
-			ld_processes.path[i], proc->pid, ld_processes.prio[i]);
+
+			printf("\tLoaded a process at %s, PID: %d", ld_processes.path[i], proc->pid);
+			#ifdef MLQ_SCHED
+			printf(" PRIO: %ld\n", ld_processes.prio[i]);
+			#else
+			#ifdef CFS_SCHED
+			printf(" NICE: %d\n", proc->niceness);
+			#else
+			printf("\n");
+			#endif
+			#endif
 		add_proc(proc);
 		free(ld_processes.path[i]);
 		i++;

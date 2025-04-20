@@ -3,9 +3,8 @@
 
 #include "common.h"
 
-#ifndef MLQ_SCHED
-#define MLQ_SCHED
-#endif
+// Remove commented out MLQ_SCHED definition
+// It's already properly controlled via os-cfg.h
 
 #define MAX_PRIO 140
 
@@ -23,6 +22,9 @@ void put_proc(struct pcb_t * proc);
 /* Add a new process to ready queue */
 void add_proc(struct pcb_t * proc);
 
+#ifdef CFS_SCHED
+/* Calculate time slice for a process based on its weight */
+unsigned long calc_time_slice(struct pcb_t *proc);
 #endif
 
-
+#endif

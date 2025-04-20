@@ -97,6 +97,11 @@ struct pcb_t // Dynamic
 	struct memphy_struct *active_mswp;
 	uint32_t active_mswp_id;
 #endif
+#ifdef CFS_SCHED
+    unsigned long vruntime;    
+    int niceness;              
+    unsigned long weight;       
+#endif
 	struct page_table_t *page_table; // Page table (dynamic)
 	uint32_t bp;			 // Break pointer
 };

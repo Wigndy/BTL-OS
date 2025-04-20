@@ -41,7 +41,24 @@ struct pcb_t * load(const char * path) {
 		(struct page_table_t*)malloc(sizeof(struct page_table_t));
 	proc->bp = PAGE_SIZE;
 	proc->pc = 0;
-
+	
+	#ifdef CFS_SCHED
+	proc->vruntime = 0;
+    // Set niceness based on process name
+    if (strstr(path, "nice_neg20")) {
+        proc->niceness = -20;
+    } else if (strstr(path, "nice_neg10")) {
+        proc->niceness = -10;
+    } else if (strstr(path, "nice_pos10")) {
+        proc->niceness = 10;
+    } else if (strstr(path, "nice_pos19")) {
+        proc->niceness = 19;
+    } else {
+        proc->niceness = 0; // Default niceness
+    }
+    
+    // Initial vruntime and weight will be set in add_cfs_proc
+#endif
 	/* Read process code from file */
 	FILE * file;
 	if ((file = fopen(path, "r")) == NULL) {
