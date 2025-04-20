@@ -320,7 +320,7 @@
    /* SYSCALL 17 sys_memmap */
  
    // Update data
-   // data = (BYTE)
+   *data = (BYTE) regs.a3;
  
    return 0;
  }
@@ -396,6 +396,11 @@
  
    /* TODO update result of reading action*/
    //destination 
+   if (data != '\0') {
+     *destination = data;
+   } else {
+     *destination = -1;
+   }
    printf("===== PHYSICAL MEMORY AFTER READING =====\n");
  #ifdef IODUMP
    printf("read region=%d offset=%d value=%d\n", source, offset, data);
