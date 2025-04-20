@@ -48,6 +48,7 @@ struct vm_area_struct {
  */
 struct mm_struct {
    uint32_t *pgd;
+   uint32_t num_pages;
 
    struct vm_area_struct *mmap;
 

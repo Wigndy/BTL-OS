@@ -47,10 +47,12 @@ void init_scheduler(void) {
  *  State representation   prio = 0 .. MAX_PRIO, curr_slot = 0..(MAX_PRIO - prio)
  */
 struct pcb_t * get_mlq_proc(void) {
+	static int total_slot = 0;
 	struct pcb_t * proc = NULL;
 	/*TODO: get a process from PRIORITY [ready_queue].
 	 * Remember to use lock to protect the queue.
 	 * */
+<<<<<<< HEAD
 
 	static unsigned long current_prio = 0; // Current priority level
 	static int remaining_slot = 0; // Track available slots for current priority
@@ -88,6 +90,28 @@ struct pcb_t * get_mlq_proc(void) {
 	
 	pthread_mutex_unlock(&queue_lock);
 	
+=======
+	if (total_slot == 0) {
+		for (int i = 0; i < MAX_PRIO; i++) {
+			slot[i] = MAX_PRIO - i;
+		}
+		total_slot = MAX_PRIO * (MAX_PRIO + 1) / 2;
+	}
+
+	pthread_mutex_lock(&queue_lock);
+
+	for (int i = 0; i < MAX_PRIO; i++) {
+		if (slot[i] == 0) continue;
+		proc = dequeue(&mlq_ready_queue[i]);
+		if (proc != NULL) {
+			--slot[i];
+			--total_slot;
+			break;
+		}
+	}
+
+	pthread_mutex_unlock(&queue_lock);
+>>>>>>> origin/Nhan
 	return proc;	
 }
 
@@ -115,8 +139,14 @@ void put_proc(struct pcb_t * proc) {
 	/* TODO: put running proc to running_list */
 
 	pthread_mutex_lock(&queue_lock);
+<<<<<<< HEAD
     enqueue(&running_list, proc);
     pthread_mutex_unlock(&queue_lock);
+=======
+	enqueue(&running_list, proc);
+	pthread_mutex_unlock(&queue_lock);
+
+>>>>>>> origin/Nhan
 	return put_mlq_proc(proc);
 }
 
@@ -126,9 +156,17 @@ void add_proc(struct pcb_t * proc) {
 	proc->running_list = & running_list;
 
 	/* TODO: put running proc to running_list */
+<<<<<<< HEAD
 	pthread_mutex_lock(&queue_lock);
     enqueue(&running_list, proc);
     pthread_mutex_unlock(&queue_lock);
+=======
+
+	pthread_mutex_lock(&queue_lock);
+	enqueue(&running_list, proc);
+	pthread_mutex_unlock(&queue_lock);
+
+>>>>>>> origin/Nhan
 	return add_mlq_proc(proc);
 }
 #else
@@ -140,7 +178,10 @@ struct pcb_t * get_proc(void) {
 	pthread_mutex_lock(&queue_lock);
 	proc = dequeue(&ready_queue);
 	pthread_mutex_unlock(&queue_lock);
+<<<<<<< HEAD
 	// TODO: how about out proc null ?
+=======
+>>>>>>> origin/Nhan
 	return proc;
 }
 
@@ -152,6 +193,10 @@ void put_proc(struct pcb_t * proc) {
 	pthread_mutex_lock(&queue_lock);
     enqueue(&running_list, proc);
     pthread_mutex_unlock(&queue_lock);
+
+	pthread_mutex_lock(&queue_lock);
+	enqueue(&running_list, proc);
+	pthread_mutex_unlock(&queue_lock);
 
 	pthread_mutex_lock(&queue_lock);
 	enqueue(&run_queue, proc);
@@ -166,6 +211,10 @@ void add_proc(struct pcb_t * proc) {
 	pthread_mutex_lock(&queue_lock);
     enqueue(&running_list, proc);
     pthread_mutex_unlock(&queue_lock);
+
+	pthread_mutex_lock(&queue_lock);
+	enqueue(&running_list, proc);
+	pthread_mutex_unlock(&queue_lock);
 
 	pthread_mutex_lock(&queue_lock);
 	enqueue(&ready_queue, proc);

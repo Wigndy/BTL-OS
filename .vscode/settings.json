@@ -1,0 +1,14 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "syscall.h": "c",
+        "common.h": "c",
+        "libmem.h": "c",
+        "*.lst": "c",
+        "files.eol": "\n",
+        "os-cfg.h": "c",
+        "stdint.h": "c",
+        "stdio.h": "c",
+        "system_error": "c"
+    }
+}

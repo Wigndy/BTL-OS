@@ -147,6 +147,7 @@ static void read_config(const char * path) {
 		exit(1);
 	}
 	fscanf(file, "%d %d %d\n", &time_slot, &num_cpus, &num_processes);
+
 	ld_processes.path = (char**)malloc(sizeof(char*) * num_processes);
 	ld_processes.start_time = (unsigned long*)
 		malloc(sizeof(unsigned long) * num_processes);
@@ -172,6 +173,7 @@ static void read_config(const char * path) {
 		fscanf(file, "%d", &(memswpsz[sit])); 
 
        fscanf(file, "\n"); /* Final character */
+	// ????????????????????????????????????
 #endif
 #endif
 

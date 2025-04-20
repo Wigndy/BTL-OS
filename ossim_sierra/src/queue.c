@@ -9,8 +9,14 @@ int empty(struct queue_t * q) {
 
 void enqueue(struct queue_t * q, struct pcb_t * proc) {
         /* TODO: put a new process to queue [q] */
+<<<<<<< HEAD
         if (q == NULL || proc == NULL) return;
         if (q->size >= MAX_QUEUE_SIZE) return;
+=======
+        if (q == NULL || proc == NULL || q->size >= MAX_QUEUE_SIZE) {
+                return;
+        }
+>>>>>>> origin/Nhan
         q->proc[q->size] = proc;
         q->size++;
 }
@@ -47,3 +53,9 @@ struct pcb_t * dequeue(struct queue_t * q) {
         return ret_proc;
 }
 
+// void remove_proc(struct queue_t * q, int index) {
+//         for (int i = index + 1; i < q->size; ++i) {
+//                 q->proc[i - 1] = q->proc[i];
+//         }
+//         q->size--;
+// }

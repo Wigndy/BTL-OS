@@ -5,7 +5,7 @@
 
 static pthread_t _timer;
 
-struct timer_id_container_t {
+struct timer_id_container_t { // Single linked list contains time_id_t
 	struct timer_id_t id;
 	struct timer_id_container_t * next;
 };
