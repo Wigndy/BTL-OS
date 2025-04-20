@@ -1,0 +1,10 @@
+<time_slot> <num_cpu> <num_process>
+5 num for mm :)?
+from line 3:
+if MLQ: <proc_start_time> <proc_name> <proc_prio>
+else: <proc_start_time> <proc_name>
+
+proc format:
+<priority> <code_size>
+<opcode> <arg_1_for_instruction> <arg_2> ...
+...
