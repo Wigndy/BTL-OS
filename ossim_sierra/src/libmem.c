@@ -180,7 +180,7 @@
    int ret = __alloc(proc, 0, reg_index, size, &addr);
  
    printf("===== PHYSICAL MEMORY AFTER ALLOCATION =====\n");
-   printf("PID=%d - Region=? - Address=%d - Size=%d byte\n", proc->pid, addr, size);
+   printf("PID=%d - Region=%d - Address=0x%d - Size=%d byte\n", proc->pid, reg_index, addr, size);
    print_pgtbl(proc, 0, -1);
    printf("================================================================\n");
    return ret;

@@ -14,7 +14,7 @@
 #include "libmem.h"
 #include "queue.h" //????????????????
 #include "stdlib.h" //????????????????
-
+#include <string.h>
 int check_name(char *proc_name, char *path)
 {
     int name_index = 0, path_index = 0;
@@ -74,29 +74,35 @@ int kill_in_queue(struct queue_t *proc_queue, char *proc_name)
 int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
 {
     char proc_name[100];
-    uint32_t data;
 
     //hardcode for demo only
     uint32_t memrg = regs->a1;
     
-    /* TODO: Get name of the target proc */
-    //proc_name = libread..
     int i = 0;
-    data = 0;
-    while(data != -1){
-        libread(caller, memrg, i, &data);
-        proc_name[i]= data;
-        if(data == -1) proc_name[i]='\0';
+    int read_result;
+    uint32_t data = 0;
+    
+    // Initialize proc_name to empty string
+    proc_name[0] = '\0';
+    
+    // Read memory region until terminator or max length
+    while(i < 99) {
+
+        read_result = libread(caller, memrg, i, &data);
+        
+        // Check for read errors or terminator
+        if (read_result != 0 || data == -1) {
+            break;  // Stop reading on any error or when terminator found
+        }
+        
+        // Store the character and move to next position
+        proc_name[i] = data;
         i++;
     }
-
-    printf("The procname retrieved from memregionid %d is \"%s\"\n", memrg, proc_name);
-
-    /* TODO: Traverse proclist to terminate the proc
-     *       stcmp to check the process match proc_name
-     */
-    //caller->running_list
-    //caller->mlq_ready_queue    
+    
+    // Ensure the string is properly null-terminated
+    proc_name[i] = '\0';
+    printf("The procname retrieved from memregionid %d is \"%s\"\n", memrg, proc_name);  
     int killed_count = 0; // Expected output
 
     struct queue_t *running_list = caller->running_list;
@@ -126,7 +132,6 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
      *       all processes with given
      *        name in var proc_name
      */
-    int killed_count = 0;
     
     struct queue_t *running = caller->running_list;
     if (running != NULL) {
@@ -139,10 +144,10 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
             struct pcb_t *proc = running->proc[i];
             
             // Check if this process matches our target name
-            if (proc != NULL && strcmp(proc->name, proc_name) == 0) {
+            if (proc != NULL && check_name(proc_name, proc->path)) {
                 // This is a process we want to terminate
                 printf("Terminating process %s (PID: %d) from running list\n", 
-                    proc->name, proc->pid);
+                    proc_name, proc->pid);
                 killed_count++;
                 
                 // Free process resources
@@ -162,57 +167,6 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
         }
     }
 
-<<<<<<< HEAD
-#ifdef MLQ_SCHED
-    /* Traverse MLQ ready queues to find and terminate matching processes */
-    if (caller->mlq_ready_queue != NULL) {
-        for (int prio = 0; prio < MAX_PRIO; prio++) {
-            struct queue_t *queue = &caller->mlq_ready_queue[prio];
-            struct queue_t new_queue;
-            new_queue.size = 0;
-            
-            for (i = 0; i < queue->size; i++) {
-                struct pcb_t *proc = queue->proc[i];
-                
-                if (proc != NULL && strcmp(proc->name, proc_name) == 0) {
-                    printf("Terminating process %s (PID: %d) from MLQ priority %d\n", 
-                        proc->name, proc->pid, prio);
-                    killed_count++;
-                    // Free process resources if needed
-                    // free(proc);
-                } else {
-                    new_queue.proc[new_queue.size++] = proc;
-                }
-            }
-            
-            // Replace the old queue with the new one
-            queue->size = new_queue.size;
-            for (i = 0; i < new_queue.size; i++) {
-                queue->proc[i] = new_queue.proc[i];
-            }
-        }
-    }
-#endif
-
-    return killed_count;
-    return 0; 
-=======
-    // if (same_name) {
-    //     remove_proc(running_list, queue_index);
-    //     if (proc->page_table != NULL) free(proc->page_table);
-    //     if (proc->code != NULL) {
-    //         if (proc->code->text != NULL) free(proc->code->text);
-    //         free(proc->code);
-    //     }
-    //     #ifdef MM_PAGING
-    //         if (proc->mm != NULL) {
-    //             // Delete the paging ??????????????
-    //             free(proc->mm);
-    //         }
-    //     #endif
-    //     free(proc);
-    // }
     return killed_count; // Expected output
->>>>>>> origin/Nhan
 }
  
