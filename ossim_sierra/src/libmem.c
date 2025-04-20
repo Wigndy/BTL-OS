@@ -298,13 +298,12 @@
    struct sc_regs regs;
    regs.a1 = SYSMEM_IO_READ;
    regs.a2 = phyaddr;///?
-   regs.a3 = *data;////?
  
    /* SYSCALL 17 sys_memmap */
    __sys_memmap(caller, &regs);
  
    // Update data
-   // data = (BYTE)*data;
+   data = (BYTE)*data;
  
    return 0;
  }
@@ -377,7 +376,7 @@
    int val = __read(proc, 0, source, offset, &data);
  
    /* TODO update result of reading action*/
-   //destination 
+   *destination = data; 
  #ifdef IODUMP
    printf("read region=%d offset=%d value=%d\n", source, offset, data);
  #ifdef PAGETBL_DUMP
