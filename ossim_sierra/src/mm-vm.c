@@ -54,15 +54,13 @@ struct vm_rg_struct *get_vm_area_node_at_brk(struct pcb_t *caller, int vmaid, in
 {
   struct vm_rg_struct * newrg;
   /* TODO retrive current vma to obtain newrg, current comment out due to compiler redundant warning*/
-  //struct vm_area_struct *cur_vma = get_vma_by_num(caller->mm, vmaid);
+  struct vm_area_struct *cur_vma = get_vma_by_num(caller->mm, vmaid);
 
   newrg = malloc(sizeof(struct vm_rg_struct));
 
-  /* TODO: update the newrg boundary
-  // newrg->rg_start = ...
-  // newrg->rg_end = ...
-  */
-
+  /* TODO: update the newrg boundary*/
+  newrg->rg_start = cur_vma->sbrk;
+  newrg->rg_end = newrg->rg_start + alignedsz;
   return newrg;
 }
 
@@ -75,9 +73,18 @@ struct vm_rg_struct *get_vm_area_node_at_brk(struct pcb_t *caller, int vmaid, in
  */
 int validate_overlap_vm_area(struct pcb_t *caller, int vmaid, int vmastart, int vmaend)
 {
-  //struct vm_area_struct *vma = caller->mm->mmap;
-
+  if(vmastart >= vmaend) return -1;
+  struct vm_area_struct *vma = caller->mm->mmap;
   /* TODO validate the planned memory area is not overlapped */
+  if(vma == NULL) return -1;
+  struct vm_area_struct *vmaCheck = get_vma_by_num(caller->mm, vmaid);
+  if(vmaCheck == NULL) return -1;
+  while(vma){
+    if(vma != vmaCheck && OVERLAP(vmaCheck->vm_start, vmaCheck->vm_end, vma->vm_start, vma->vm_end)){
+      return -1;
+    }
+    vma = vma->vm_next;
+  }
 
   return 0;
 }
@@ -98,18 +105,29 @@ int inc_vma_limit(struct pcb_t *caller, int vmaid, int inc_sz)
 
   int old_end = cur_vma->vm_end;
 
+  if (area == NULL) return -1;
+
   /*Validate overlap of obtained region */
-  if (validate_overlap_vm_area(caller, vmaid, area->rg_start, area->rg_end) < 0)
+  if (validate_overlap_vm_area(caller, vmaid, area->rg_start, area->rg_end) < 0){
+    free(area);
     return -1; /*Overlap and failed allocation */
+  }
 
   /* TODO: Obtain the new vm area based on vmaid */
-  //cur_vma->vm_end... 
-  // inc_limit_ret...
+  // cur_vma->vm_end += inc_amt;
+  // cur_vma->sbrk += inc_amt;
+  // // inc_limit_ret...
 
   if (vm_map_ram(caller, area->rg_start, area->rg_end, 
-                    old_end, incnumpage , newrg) < 0)
+                    old_end, incnumpage , newrg) < 0){
+    free(area);
     return -1; /* Map the memory to MEMRAM */
-
+  }
+  
+  cur_vma->vm_end += inc_amt;
+  cur_vma->sbrk += inc_amt;
+  enlist_vm_rg_node(&caller->mm->mmap->vm_freerg_list, newrg);
+  free(area);
   return 0;
 }
 
