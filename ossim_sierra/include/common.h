@@ -82,8 +82,8 @@ struct pcb_t
 	struct code_seg_t *code; // Code segment
 	addr_t regs[10];	 // Registers, store address of allocated regions
 	uint32_t pc;		 // Program pointer, point to the next instruction
-	struct queue_t *ready_queue;
-	struct queue_t *running_list;
+	struct queue_t *ready_queue;	// Why do we have this queue for each process like there??? And below also
+	struct queue_t *running_list;	
 #ifdef MLQ_SCHED
 	struct queue_t *mlq_ready_queue;
 	// Priority on execution (if supported), on-fly aka. changeable

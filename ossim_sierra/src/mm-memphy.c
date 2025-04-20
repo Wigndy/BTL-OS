@@ -13,6 +13,7 @@
  *  MEMPHY_mv_csr - move MEMPHY cursor
  *  @mp: memphy struct
  *  @offset: offset
+ *  cursor = 0 if offset >= maxsz, or = offset
  */
 int MEMPHY_mv_csr(struct memphy_struct *mp, int offset)
 {
@@ -153,7 +154,7 @@ int MEMPHY_get_freefp(struct memphy_struct *mp, int *retfpn)
    /* MEMPHY is iteratively used up until its exhausted
     * No garbage collector acting then it not been released
     */
-   free(fp);
+   free(fp); // !!! I think that it is freed up allowing the process's mem to get in ???
 
    return 0;
 }
@@ -163,7 +164,29 @@ int MEMPHY_dump(struct memphy_struct *mp)
   /*TODO dump memphy contnt mp->storage
    *     for tracing the memory content
    */
-   return 0;
+   if(mp == NULL)
+   {
+      printf("ERROR: mm-memphy.c/MEMPHY_dump(): mp is null.\n");
+      return -1;
+   }
+
+   if(mp->storage == NULL)
+   {
+      printf("ERROR: mm-memphy.c/MEMPHY_dump(): mp->storage is null.\n");
+      return -1;
+   }
+
+   printf("================================================================\n");
+   printf("===== PHYSICAL MEMORY DUMP =====\n");
+  for (int idx = 0; idx < mp->maxsz; ++idx)
+  {
+   if(mp->storage[idx] != 0)
+   {
+      printf("BYTE %08x: %d\n", idx, mp->storage[idx]);
+   }
+  }
+  printf("===== PHYSICAL MEMORY END-DUMP =====\n");
+  return 0;
 }
 
 int MEMPHY_put_freefp(struct memphy_struct *mp, int fpn)

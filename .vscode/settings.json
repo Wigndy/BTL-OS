@@ -1,5 +1,13 @@
 {
     "files.associations": {
-        "common.h": "c"
+        "common.h": "c",
+        "libmem.h": "c",
+        "syscall.h": "c",
+        "*.lst": "c",
+        "mm.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "sched.h": "c",
+        "timer.h": "c"
     }
 }

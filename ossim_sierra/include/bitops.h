@@ -7,9 +7,9 @@
 #define BITS_PER_BYTE           8
 #define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
 
-#define BIT(nr)                 (1U << (nr))
+#define BIT(nr)                 (1U << (nr))		// BIT(3) = 0x8 (00001000)
 #define BIT_ULL(nr)             (1ULL << (nr))
-#define BIT_MASK(nr)            (1UL << ((nr) % BITS_PER_LONG))
+#define BIT_MASK(nr)            (1UL << ((nr) % BITS_PER_LONG))	// BIT_MASK(37) == BIT(5)
 #define BIT_WORD(nr)            ((nr) / BITS_PER_LONG)
 #define BIT_ULL_MASK(nr)        (1ULL << ((nr) % BITS_PER_LONG_LONG))
 #define BIT_ULL_WORD(nr)        ((nr) / BITS_PER_LONG_LONG)

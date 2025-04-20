@@ -11,7 +11,7 @@ typedef uint32_t addr_t;
 //typedef unsigned int uint32_t;
 
 struct pgn_t{
-   int pgn;
+   int pgn;          // Acts like an index in the pgd. I think so, we can check it again???
    struct pgn_t *pg_next; 
 };
 
@@ -47,7 +47,10 @@ struct vm_area_struct {
  * Memory management struct
  */
 struct mm_struct {
-   uint32_t *pgd;
+   /* Page table directory contains all page table entries
+   *  Each entry maps pages to frames in memory management system
+   */
+   uint32_t *pgd; 
 
    struct vm_area_struct *mmap;
 
@@ -56,13 +59,13 @@ struct mm_struct {
 
    /* list of free page */
    struct pgn_t *fifo_pgn;
-};
+}; 
 
 /*
  * FRAME/MEM PHY struct
  */
 struct framephy_struct { 
-   int fpn;
+   int fpn;    // Frame number 
    struct framephy_struct *fp_next;
 
    /* Resereed for tracking allocated framed */
@@ -75,8 +78,8 @@ struct memphy_struct {
    int maxsz;
    
    /* Sequential device fields */ 
-   int rdmflg;
-   int cursor;
+   int rdmflg;    // Boolean: random or sequential memory access
+   int cursor;    // Used for sequential case, after reading or writting at a addr, the cursor store the number of the addr 
 
    /* Management structure */
    struct framephy_struct *free_fp_list;
