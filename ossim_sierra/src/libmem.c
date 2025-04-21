@@ -193,6 +193,10 @@ int liballoc(struct pcb_t *proc, uint32_t size, uint32_t reg_index)
   /* TODO Implement allocation on vm area 0 */
   int addr;
   int ret = __alloc(proc, 0, reg_index, size, &addr);
+  if(ret == -1)
+  {
+    return -1;
+  }
 
   printf("===== PHYSICAL MEMORY AFTER ALLOCATION =====\n");
   printf("PID=%d - Region=%d - Address=%08x - Size=%ld byte\n",
@@ -215,6 +219,10 @@ int libfree(struct pcb_t *proc, uint32_t reg_index)
 
   /* By default using vmaid = 0 */
   int ret = __free(proc, 0, reg_index);
+  if(ret == -1)
+  {
+    return -1;
+  }
   
   printf("===== PHYSICAL MEMORY AFTER DEALLOCATION =====\n");
   printf("PID=%d - Region=%ld - Size=%ld byte\n",
@@ -331,14 +339,14 @@ int pg_getval(struct mm_struct *mm, int addr, BYTE *data, struct pcb_t *caller)
   struct sc_regs regs;
   regs.a1 = SYSMEM_IO_READ;
   regs.a2 = phyaddr;
-  regs.a3 = data;
+  //regs.a3 = data;
 
   /* SYSCALL 17 sys_memmap */
   syscall(caller, 17, &regs);
 
   // Update data
   // data = (BYTE)
-  data = (BYTE)regs.a3;
+  *data = (BYTE)regs.a3;
 
   return 0;
 }
@@ -411,7 +419,22 @@ int libread(
   int val = __read(proc, 0, source, offset, &data);
 
   /* TODO update result of reading action*/
-  *destination = (uint32_t)data; // Is this right???
+  if(val == -1)
+  {
+    return -1;
+  }
+  else
+  {
+    if( data == '\0' )
+    {
+      *destination = -1;
+    }
+    else
+    {
+      *destination = (uint32_t)data;
+    }
+  }
+
   // destination
   printf("================================================================\n");
   printf("===== PHYSICAL MEMORY AFTER READING =====\n");
@@ -456,6 +479,10 @@ int libwrite(
 {
   printf("===== PHYSICAL MEMORY AFTER WRITING =====\n");
   int ret = __write(proc, 0, destination, offset, data);  // I changed it to this location to write before printing
+  if(ret == -1)
+  {
+    return -1;
+  }
 #ifdef IODUMP
   printf("write region=%d offset=%d value=%d\n", destination, offset, data);
 #ifdef PAGETBL_DUMP
