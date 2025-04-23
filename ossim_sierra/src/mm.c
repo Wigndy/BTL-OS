@@ -103,19 +103,17 @@ int vmap_page_range(struct pcb_t *caller,           // process call
 
   if(frames == NULL)  return -1;
   fpit = frames;
-  while(pgit < pgnum){
-    fpit = frames;
-    pte_set_fpn(&caller->mm->pgd[pgn + pgit], fpit -> fpn);
-    frames = frames->fp_next;
-    free(fpit);
-   /* Tracking for later page replacement activities (if needed)
-    * Enqueue new usage page */
+  for (; pgit < pgnum; ++pgit)
+  {
+    pte_set_fpn(&caller->mm->pgd[pgn + pgit], fpit->fpn);
     enlist_pgn_node(&caller->mm->fifo_pgn, pgn + pgit);
+
     fpit = fpit->fp_next;
-    pgit++;
+    free(frames);
+    frames = fpit;
   }
   
-  return 0;
+  return 0;  
 }
 
 /*
@@ -159,16 +157,41 @@ int alloc_pages_range(struct pcb_t *caller, int req_pgnum, struct framephy_struc
       /**
        * Can not find out a victim or a free frame in memswp
       */
-      if(find_victim_page(caller->mm, &vicpgn) != 0 || MEMPHY_get_freefp(caller->active_mswp, &swpfpn) != 0)
+      // if(MEMPHY_get_freefp(caller->active_mswp, &swpfpn) != 0 || find_victim_page(caller->mm, &vicpgn) != 0)
+      // {
+      //   free(node_fp);
+      //   while(newfp_str)
+      //   {
+      //     MEMPHY_put_freefp(caller->mram, newfp_str->fpn);
+      //     newfp_str = newfp_str->fp_next;
+      //     // Ignore newfp_str->owner
+      //   }
+      //   return -3000;
+      // }
+
+      if (MEMPHY_get_freefp(caller->active_mswp, &swpfpn) != 0)
       {
-        free(node_fp);
-        while(newfp_str)
+        if(find_victim_page(caller->mm, &vicpgn) != 0)
         {
-          MEMPHY_put_freefp(caller->mram, newfp_str->fpn);
-          newfp_str = newfp_str->fp_next;
-          // Ignore newfp_str->owner
+            free(node_fp);
+            while(newfp_str)
+            {
+              MEMPHY_put_freefp(caller->mram, newfp_str->fpn);
+              newfp_str = newfp_str->fp_next;
+              // Ignore newfp_str->owner
+            }
+            return -3000;
         }
-        return -3000;
+        else
+        {
+          // Gắn swpfpn vào ngược lại
+          struct framephy_struct *swpfpn_struct = malloc(sizeof(struct framephy_struct));
+          swpfpn_struct->fpn = swpfpn;
+          swpfpn_struct->owner = caller->mm;
+
+          swpfpn_struct->fp_next = caller->active_mswp->free_fp_list;
+          caller->active_mswp->free_fp_list = swpfpn_struct;
+        }
       }
 
       uint32_t *vicpte = &caller->mm->pgd[vicpgn];

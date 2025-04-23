@@ -173,7 +173,7 @@ int liballoc(struct pcb_t *proc, uint32_t size, uint32_t reg_index)
   if (ret == -1)  return -1;
 
   printf("===== PHYSICAL MEMORY AFTER ALLOCATION =====\n");
-  printf("PID=%d - Region=%d - Address=%d - Size=%d byte\n", proc->pid, reg_index,addr, size);
+  printf("PID=%d - Region=%d - Address=%08x - Size=%d byte\n", proc->pid, reg_index,addr, size);
   // printf("Allocated region: [%d - %d]\n", proc->mm->symrgtbl[reg_index].rg_start, proc->mm->symrgtbl[reg_index].rg_end);
   print_pgtbl(proc, 0, -1);
   printf("================================================================\n");
@@ -292,7 +292,7 @@ int pg_getval(struct mm_struct *mm, int addr, BYTE *data, struct pcb_t *caller)
   int pgn = PAGING_PGN(addr);
   int off = PAGING_OFFST(addr);
   int fpn;
-
+  pthread_mutex_lock(&mmvm_lock);
   /* Get the page to MEMRAM, swap from MEMSWAP if needed */
   if (pg_getpage(mm, pgn, &fpn, caller) != 0)
     return -1; /* invalid page access */
@@ -310,11 +310,13 @@ int pg_getval(struct mm_struct *mm, int addr, BYTE *data, struct pcb_t *caller)
 
   /* SYSCALL 17 sys_memmap */
   // __sys_memmap(caller, &regs);
+  
   syscall(caller, 17, &regs);
+  
 
   // Update data
   *data = (BYTE)regs.a3;
-
+  pthread_mutex_unlock(&mmvm_lock);
   return 0;
 }
 
@@ -326,6 +328,7 @@ int pg_getval(struct mm_struct *mm, int addr, BYTE *data, struct pcb_t *caller)
  */
 int pg_setval(struct mm_struct *mm, int addr, BYTE value, struct pcb_t *caller)
 {
+  pthread_mutex_lock(&mmvm_lock);
   int pgn = PAGING_PGN(addr);
   int off = PAGING_OFFST(addr);
   int fpn;
@@ -347,10 +350,12 @@ int pg_setval(struct mm_struct *mm, int addr, BYTE value, struct pcb_t *caller)
 
   /* SYSCALL 17 sys_memmap */
   // __sys_memmap(caller, &regs);
+  
   syscall(caller, 17, &regs);
+  
   // Update data
   // data = (BYTE) ;
-
+  pthread_mutex_unlock(&mmvm_lock);
   return 0;
 }
 
