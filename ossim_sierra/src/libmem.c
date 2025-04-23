@@ -143,8 +143,10 @@
      return -1;
    pthread_mutex_lock(&mmvm_lock);
  
- 
-   rgnode = &caller->mm->symrgtbl[rgid];
+   rgnode = (struct vm_rg_struct *)malloc(sizeof(struct vm_rg_struct));
+   rgnode->rg_start = caller->mm->symrgtbl[rgid].rg_start;
+   rgnode->rg_end = caller->mm->symrgtbl[rgid].rg_end;
+  //  rgnode = &caller->mm->symrgtbl[rgid];
    if(rgnode->rg_start >= rgnode->rg_end){
      pthread_mutex_unlock(&mmvm_lock);
      return -1;

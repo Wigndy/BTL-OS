@@ -54,7 +54,15 @@ void delete_pcb(struct pcb_t *proc)
         if (proc->mm != NULL) {
             // Delete the paging ??????????????
             if (proc->mm->pgd != NULL) free(proc->mm->pgd);
-			if (proc->mm->mmap != NULL) free(proc->mm->mmap);
+			struct vm_rg_struct* head = proc->mm->mmap->vm_freerg_list;
+			while (head != NULL) {
+				struct vm_rg_struct* tmp = head;
+				head = head->rg_next;
+				free(tmp);
+			}
+			if (proc->mm->mmap != NULL) {
+				free(proc->mm->mmap);
+			}
 			free(proc->mm);
         }
     #endif
@@ -290,10 +298,38 @@ int main(int argc, char * argv[]) {
 
 #ifdef MM_PAGING
 	/* Free all MEMPHY */
-	for(sit = 0; sit < PAGING_MAX_MMSWP; sit++)
+	for(sit = 0; sit < PAGING_MAX_MMSWP; sit++) {
 		free(mswp[sit].storage);
+		struct framephy_struct *fp = mswp[sit].free_fp_list;
+		while (fp != NULL) {
+			struct framephy_struct *tmp = fp;
+			fp = fp->fp_next;
+			free(tmp);
+		}
+		struct framephy_struct *fp_used = mswp[sit].used_fp_list;
+		while (fp_used != NULL) {
+			struct framephy_struct *tmp = fp_used;
+			fp_used = fp_used->fp_next;
+			free(tmp);
+		}
+	}
 	free(mram.storage);
+	free(mm_ld_args);
+	struct framephy_struct *fp = mram.free_fp_list;
+	while (fp != NULL) {
+		struct framephy_struct *tmp = fp;
+		fp = fp->fp_next;
+		free(tmp);
+	}
+	struct framephy_struct *fp_used = mram.used_fp_list;
+	while (fp_used != NULL) {
+		struct framephy_struct *tmp = fp_used;
+		fp_used = fp_used->fp_next;
+		free(tmp);
+	}
 #endif
+	free(args);
+	free(cpu);
 
 	return 0;
 

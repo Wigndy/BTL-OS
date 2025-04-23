@@ -196,6 +196,8 @@
  {
     mp->storage = (BYTE *)malloc(max_size * sizeof(BYTE));
     mp->maxsz = max_size;
+    mp->free_fp_list = NULL;
+    mp->used_fp_list = NULL;
     memset(mp->storage, 0, max_size * sizeof(BYTE));
  
     MEMPHY_format(mp, PAGING_PAGESZ);
