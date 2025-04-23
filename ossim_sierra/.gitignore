@@ -1,3 +1,12 @@
 obj/
 os
 .vscode/
+gantt_charts/
+.gitignore
+gantt_chart.py
+res_os_sc.txt
+res_os_syscall.txt
+res_os_syscall_list.txt
+res_sched_0.txt
+res_sched_1.txt
+res_sched.txt
