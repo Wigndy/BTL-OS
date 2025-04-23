@@ -14,6 +14,10 @@
 #include "libmem.h"
 #include "queue.h" //????????????????
 #include "stdlib.h" //????????????????
+#include <pthread.h>
+
+static pthread_mutex_t queue_lock;
+
 
 int check_name(char *proc_name, char *path)
 {
@@ -58,7 +62,7 @@ int kill_in_queue(struct queue_t *proc_queue, char *proc_name)
             ++count;
         }
         else {
-            new_queue.proc[new_queue.size] = proc;
+            enqueue(&new_queue, proc);
             new_queue.size++;
         }
     }
@@ -92,6 +96,7 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
 
     printf("The procname retrieved from memregionid %d is \"%s\"\n", memrg, proc_name);
 
+    pthread_mutex_lock(&queue_lock);
     /* TODO: Traverse proclist to terminate the proc
      *       stcmp to check the process match proc_name
      */
@@ -120,7 +125,7 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
             killed_count += kill_in_queue(ready_queue, proc_name);
         }
     #endif
-
+    pthread_mutex_unlock(&queue_lock);
 
     /* TODO Maching and terminating 
      *       all processes with given
