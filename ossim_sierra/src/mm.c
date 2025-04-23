@@ -174,7 +174,7 @@ int alloc_pages_range(struct pcb_t *caller, int req_pgnum, struct framephy_struc
       uint32_t *vicpte = &caller->mm->pgd[vicpgn];
       int vicfpn = PAGING_FPN(*vicpte);
       __swap_cp_page(caller->mram, vicfpn, caller->active_mswp, swpfpn);
-      pte_set_swap(vicpte, 0, swpfpn);
+      pte_set_swap(vicpte, caller->active_mswp_id, swpfpn);
       node_fp->fpn = vicfpn;
     }
     node_fp->owner = caller->mm;
