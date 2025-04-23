@@ -43,6 +43,23 @@ struct cpu_args {
 	int id;
 };
 
+void delete_pcb(struct pcb_t *proc)
+{
+    if (proc->page_table != NULL) free(proc->page_table);
+    if (proc->code != NULL) {
+        if (proc->code->text != NULL) free(proc->code->text);
+        free(proc->code);
+    }
+    #ifdef MM_PAGING
+        if (proc->mm != NULL) {
+            // Delete the paging ??????????????
+            if (proc->mm->pgd != NULL) free(proc->mm->pgd);
+			if (proc->mm->mmap != NULL) free(proc->mm->mmap);
+			free(proc->mm);
+        }
+    #endif
+}
+
 
 static void * cpu_routine(void * args) {
 	struct timer_id_t * timer_id = ((struct cpu_args*)args)->timer_id;
@@ -64,6 +81,7 @@ static void * cpu_routine(void * args) {
 			/* The porcess has finish it job */
 			printf("\tCPU %d: Processed %2d has finished\n",
 				id ,proc->pid);
+			delete_pcb(proc);
 			free(proc);
 			proc = get_proc();
 			time_left = 0;
@@ -269,6 +287,13 @@ int main(int argc, char * argv[]) {
 
 	/* Stop timer */
 	stop_timer();
+
+#ifdef MM_PAGING
+	/* Free all MEMPHY */
+	for(sit = 0; sit < PAGING_MAX_MMSWP; sit++)
+		free(mswp[sit].storage);
+	free(mram.storage);
+#endif
 
 	return 0;
 
