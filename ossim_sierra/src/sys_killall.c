@@ -10,14 +10,11 @@
 
 #include "common.h"
 #include "syscall.h"
-#include "stdio.h"
+#include <stdio.h>
 #include "libmem.h"
 #include "queue.h" //????????????????
 #include "stdlib.h" //????????????????
-#include <pthread.h>
-
-static pthread_mutex_t queue_lock;
-
+#include "sched.h" //????????????????
 
 int check_name(char *proc_name, char *path)
 {
@@ -45,31 +42,22 @@ int check_name(char *proc_name, char *path)
 
 int kill_in_queue(struct queue_t *proc_queue, char *proc_name)
 {
-    struct queue_t new_queue;
-    new_queue.size = 0;
-    int count = 0;
-    
-    for (int i = 0; i < proc_queue->size; ++i) {
+    int count = 0, i = 0;
+
+    while (i < proc_queue->size) {
         struct pcb_t *proc = proc_queue->proc[i];
-        if (proc == NULL) continue;
+        if (proc == NULL) {
+            ++i;
+            continue;
+        }
 
         int same_name = check_name(proc_name, proc->path);
-
         if (same_name == 1) {
             printf("Process %s killed\n", proc_name);
-            // free ?????????
-            free(proc);
+            remove_pcb(proc);
             ++count;
         }
-        else {
-            enqueue(&new_queue, proc);
-            new_queue.size++;
-        }
-    }
-
-    proc_queue->size = new_queue.size;
-    for (int i = 0; i < new_queue.size; ++i) {
-        proc_queue->proc[i] = new_queue.proc[i];
+        else ++i;
     }
 
     return count;
@@ -96,7 +84,6 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
 
     printf("The procname retrieved from memregionid %d is \"%s\"\n", memrg, proc_name);
 
-    pthread_mutex_lock(&queue_lock);
     /* TODO: Traverse proclist to terminate the proc
      *       stcmp to check the process match proc_name
      */
@@ -125,7 +112,6 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
             killed_count += kill_in_queue(ready_queue, proc_name);
         }
     #endif
-    pthread_mutex_unlock(&queue_lock);
 
     /* TODO Maching and terminating 
      *       all processes with given

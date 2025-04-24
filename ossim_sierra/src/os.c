@@ -43,30 +43,30 @@ struct cpu_args {
 	int id;
 };
 
-void delete_pcb(struct pcb_t *proc)
-{
-    if (proc->page_table != NULL) free(proc->page_table);
-    if (proc->code != NULL) {
-        if (proc->code->text != NULL) free(proc->code->text);
-        free(proc->code);
-    }
-    #ifdef MM_PAGING
-        if (proc->mm != NULL) {
-            // Delete the paging ??????????????
-            if (proc->mm->pgd != NULL) free(proc->mm->pgd);
-			struct vm_rg_struct* head = proc->mm->mmap->vm_freerg_list;
-			while (head != NULL) {
-				struct vm_rg_struct* tmp = head;
-				head = head->rg_next;
-				free(tmp);
-			}
-			if (proc->mm->mmap != NULL) {
-				free(proc->mm->mmap);
-			}
-			free(proc->mm);
-        }
-    #endif
-}
+// void delete_pcb(struct pcb_t *proc)
+// {
+//     if (proc->page_table != NULL) free(proc->page_table);
+//     if (proc->code != NULL) {
+//         if (proc->code->text != NULL) free(proc->code->text);
+//         free(proc->code);
+//     }
+//     #ifdef MM_PAGING
+//         if (proc->mm != NULL) {
+//             // Delete the paging ??????????????
+//             if (proc->mm->pgd != NULL) free(proc->mm->pgd);
+// 			struct vm_rg_struct* head = proc->mm->mmap->vm_freerg_list;
+// 			while (head != NULL) {
+// 				struct vm_rg_struct* tmp = head;
+// 				head = head->rg_next;
+// 				free(tmp);
+// 			}
+// 			if (proc->mm->mmap != NULL) {
+// 				free(proc->mm->mmap);
+// 			}
+// 			free(proc->mm);
+//         }
+//     #endif
+// }
 
 
 static void * cpu_routine(void * args) {
@@ -89,8 +89,7 @@ static void * cpu_routine(void * args) {
 			/* The porcess has finish it job */
 			printf("\tCPU %d: Processed %2d has finished\n",
 				id ,proc->pid);
-			delete_pcb(proc);
-			free(proc);
+			remove_pcb(proc);
 			proc = get_proc();
 			time_left = 0;
 		}else if (time_left == 0) {

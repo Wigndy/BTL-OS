@@ -65,10 +65,13 @@ struct pcb_t * get_mlq_proc(void) {
 		}
 	}
 
-	if (proc == NULL && reset_slot == 1) {
-		for (int i = 0; i < MAX_PRIO; i++) {
+	if (proc != NULL) {
+		enqueue(&running_list, proc);
+		proc->running_list = &running_list;
+	}
+	else if (reset_slot == 1) {
+		for (int i = 0; i < MAX_PRIO; i++)
 			slot[i] = MAX_PRIO - i;
-		}
 	}
 
 	pthread_mutex_unlock(&queue_lock);
@@ -95,27 +98,29 @@ struct pcb_t * get_proc(void) {
 void put_proc(struct pcb_t * proc) {
 	proc->ready_queue = &ready_queue;
 	proc->mlq_ready_queue = mlq_ready_queue;
-	proc->running_list = & running_list;
+	// proc->running_list = & running_list;
 
 	/* TODO: put running proc to running_list */
+	put_mlq_proc(proc);
 
 	pthread_mutex_lock(&queue_lock);
-	enqueue(&running_list, proc);
+	remove_proc(&running_list, proc);
+	proc->running_list = NULL;
 	pthread_mutex_unlock(&queue_lock);
 
-	return put_mlq_proc(proc);
+	return;
 }
 
 void add_proc(struct pcb_t * proc) {
 	proc->ready_queue = &ready_queue;
 	proc->mlq_ready_queue = mlq_ready_queue;
-	proc->running_list = & running_list;
+	// proc->running_list = & running_list;
 
 	/* TODO: put running proc to running_list */
 
-	pthread_mutex_lock(&queue_lock);
-	enqueue(&running_list, proc);
-	pthread_mutex_unlock(&queue_lock);
+	// pthread_mutex_lock(&queue_lock);
+	// enqueue(&running_list, proc);
+	// pthread_mutex_unlock(&queue_lock);
 
 	return add_mlq_proc(proc);
 }
@@ -126,35 +131,46 @@ struct pcb_t * get_proc(void) {
 	 * Remember to use lock to protect the queue.
 	 * */
 	pthread_mutex_lock(&queue_lock);
+
 	proc = dequeue(&ready_queue);
+	if (proc != NULL) {
+		proc->running_list = &running_list;
+		enqueue(&running_list, proc);
+	}
+
 	pthread_mutex_unlock(&queue_lock);
 	return proc;
 }
 
 void put_proc(struct pcb_t * proc) {
 	proc->ready_queue = &ready_queue;
-	proc->running_list = & running_list;
+	// proc->running_list = & running_list;
 
 	/* TODO: put running proc to running_list */
 
-	pthread_mutex_lock(&queue_lock);
-	enqueue(&running_list, proc);
-	pthread_mutex_unlock(&queue_lock);
+	// pthread_mutex_lock(&queue_lock);
+	// enqueue(&running_list, proc);
+	// pthread_mutex_unlock(&queue_lock);
 
 	pthread_mutex_lock(&queue_lock);
-	enqueue(&run_queue, proc);
+
+	enqueue(&ready_queue, proc);
+
+	remove_proc(&running_list, proc);
+	proc->running_list = NULL;
+
 	pthread_mutex_unlock(&queue_lock);
 }
 
 void add_proc(struct pcb_t * proc) {
 	proc->ready_queue = &ready_queue;
-	proc->running_list = & running_list;
+	// proc->running_list = & running_list;
 
 	/* TODO: put running proc to running_list */
 
-	pthread_mutex_lock(&queue_lock);
-	enqueue(&running_list, proc);
-	pthread_mutex_unlock(&queue_lock);
+	// pthread_mutex_lock(&queue_lock);
+	// enqueue(&running_list, proc);
+	// pthread_mutex_unlock(&queue_lock);
 
 	pthread_mutex_lock(&queue_lock);
 	enqueue(&ready_queue, proc);
@@ -163,3 +179,49 @@ void add_proc(struct pcb_t * proc) {
 #endif
 
 
+void delete_pcb(struct pcb_t *proc)
+{
+    if (proc->page_table != NULL) free(proc->page_table);
+    if (proc->code != NULL) {
+        if (proc->code->text != NULL) free(proc->code->text);
+        free(proc->code);
+    }
+    #ifdef MM_PAGING
+        if (proc->mm != NULL) {
+            // Delete the paging ??????????????
+            if (proc->mm->pgd != NULL) free(proc->mm->pgd);
+			struct vm_rg_struct* head = proc->mm->mmap->vm_freerg_list;
+			while (head != NULL) {
+				struct vm_rg_struct* tmp = head;
+				head = head->rg_next;
+				free(tmp);
+			}
+			if (proc->mm->mmap != NULL) {
+				free(proc->mm->mmap);
+			}
+			free(proc->mm);
+        }
+    #endif
+}
+
+void remove_pcb(struct pcb_t *proc) {	
+	while (proc->running_list != NULL && proc->pc != proc->code->size) { }
+
+	pthread_mutex_lock(&queue_lock);
+
+	if (proc->running_list != NULL) {
+		remove_proc(proc->running_list, proc);
+	}
+	else {
+		#ifdef MLQ_SCHED
+			remove_proc(&mlq_ready_queue[proc->prio], proc);
+		#else
+			remove_proc(&ready_queue, proc);
+		#endif
+	}
+
+	delete_pcb(proc);
+	free(proc);
+
+	pthread_mutex_unlock(&queue_lock);
+}

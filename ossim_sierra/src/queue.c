@@ -49,9 +49,15 @@ struct pcb_t * dequeue(struct queue_t * q) {
         return ret_proc;
 }
 
-// void remove_proc(struct queue_t * q, int index) {
-//         for (int i = index + 1; i < q->size; ++i) {
-//                 q->proc[i - 1] = q->proc[i];
-//         }
-//         q->size--;
-// }
+void remove_proc(struct queue_t * q, struct pcb_t * proc) {
+        if (q == NULL || proc == NULL) return;
+        for (int i = 0; i < q->size; ++i) {
+                if (q->proc[i] == proc) {
+                        for (int j = i; j < q->size - 1; j++) {
+                                q->proc[j] = q->proc[j + 1];
+                        }
+                        q->size--;
+                        return;
+                }
+        }
+}

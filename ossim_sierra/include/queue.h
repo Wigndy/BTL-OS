@@ -17,5 +17,7 @@ struct pcb_t * dequeue(struct queue_t * q);
 
 int empty(struct queue_t * q);
 
+void remove_proc(struct queue_t * q, struct pcb_t * proc);
+
 #endif
 
