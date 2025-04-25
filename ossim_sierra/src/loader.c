@@ -48,7 +48,8 @@ struct pcb_t * load(const char * path) {
 		printf("Cannot find process description at '%s'\n", path);
 		exit(1);		
 	}
-	snprintf(proc->path, 2*sizeof(path)+1, "%s", path);
+	// Sua code????????????????????
+	snprintf(proc->path, sizeof(proc->path), "%s", path);
 	char opcode[10];
 	proc->code = (struct code_seg_t*)malloc(sizeof(struct code_seg_t));
 	fscanf(file, "%u %u", &proc->priority, &proc->code->size);

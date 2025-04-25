@@ -99,7 +99,7 @@ int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
     #ifdef MLQ_SCHED
         struct queue_t *mlq_ready_queue = caller->mlq_ready_queue;
         if (mlq_ready_queue != NULL) {
-            for (int i = 0; i < mlq_ready_queue->size; ++i) {
+            for (int i = 0; i < MAX_PRIO; ++i) {
                 struct queue_t *queue = &(mlq_ready_queue[i]);
                 if (queue != NULL) {
                     killed_count += kill_in_queue(queue, proc_name);
