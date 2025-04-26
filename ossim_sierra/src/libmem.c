@@ -175,7 +175,7 @@
    if (ret == -1)  return -1;
  
    printf("===== PHYSICAL MEMORY AFTER ALLOCATION =====\n");
-   printf("PID=%d - Region=%d - Address=%d - Size=%d byte\n", proc->pid, reg_index,addr, size);
+   printf("PID=%d - Region=%d - Address=%08x - Size=%d byte\n", proc->pid, reg_index,addr, size);
    // printf("Allocated region: [%d - %d]\n", proc->mm->symrgtbl[reg_index].rg_start, proc->mm->symrgtbl[reg_index].rg_end);
    print_pgtbl(proc, 0, -1);
    printf("================================================================\n");
