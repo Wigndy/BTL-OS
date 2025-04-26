@@ -396,12 +396,15 @@
      if (data == '\0') *destination = -1;
      else  *destination = data;
    }
+   printf("===== PHYSICAL MEMORY AFTER READING =====\n");
  #ifdef IODUMP
    printf("read region=%d offset=%d value=%d\n", source, offset, data);
  #ifdef PAGETBL_DUMP
    print_pgtbl(proc, 0, -1); //print max TBL
  #endif
+ printf("================================================================\n");
    MEMPHY_dump(proc->mram);
+   printf("================================================================\n");
  #endif
  
    return val;
@@ -438,13 +441,15 @@
    int val = __write(proc, 0, destination, offset, data);
    if (val == -1)
      return -1;
-   
+  printf("===== PHYSICAL MEMORY AFTER WRITING =====\n");
  #ifdef IODUMP
    printf("write region=%d offset=%d value=%d\n", destination, offset, data);
  #ifdef PAGETBL_DUMP
    print_pgtbl(proc, 0, -1); //print max TBL
  #endif
+ printf("================================================================\n");
    MEMPHY_dump(proc->mram);
+   printf("================================================================\n");
  #endif
  
    return val;
