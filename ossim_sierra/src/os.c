@@ -13,6 +13,7 @@
 static int time_slot;
 static int num_cpus;
 static int done = 0;
+static int finished = 0;
 
 #ifdef MM_PAGING
 static int memramsz;
@@ -43,6 +44,31 @@ struct cpu_args {
 	int id;
 };
 
+// void delete_pcb(struct pcb_t *proc)
+// {
+//     if (proc->page_table != NULL) free(proc->page_table);
+//     if (proc->code != NULL) {
+//         if (proc->code->text != NULL) free(proc->code->text);
+//         free(proc->code);
+//     }
+//     #ifdef MM_PAGING
+//         if (proc->mm != NULL) {
+//             // Delete the paging ??????????????
+//             if (proc->mm->pgd != NULL) free(proc->mm->pgd);
+// 			struct vm_rg_struct* head = proc->mm->mmap->vm_freerg_list;
+// 			while (head != NULL) {
+// 				struct vm_rg_struct* tmp = head;
+// 				head = head->rg_next;
+// 				free(tmp);
+// 			}
+// 			if (proc->mm->mmap != NULL) {
+// 				free(proc->mm->mmap);
+// 			}
+// 			free(proc->mm);
+//         }
+//     #endif
+// }
+
 
 static void * cpu_routine(void * args) {
 	struct timer_id_t * timer_id = ((struct cpu_args*)args)->timer_id;
@@ -57,14 +83,18 @@ static void * cpu_routine(void * args) {
 		 	* ready queue */
 			proc = get_proc();
 			if (proc == NULL) {
-                           next_slot(timer_id);
-                           continue; /* First load failed. skip dummy load */
-                        }
+				if (finished) {
+					printf("\tCPU %d stopped\n", id);
+					break;
+				}
+                next_slot(timer_id);
+                continue; /* First load failed. skip dummy load */
+            }
 		}else if (proc->pc == proc->code->size) {
 			/* The porcess has finish it job */
 			printf("\tCPU %d: Processed %2d has finished\n",
 				id ,proc->pid);
-			free(proc);
+			remove_pcb(proc);
 			proc = get_proc();
 			time_left = 0;
 		}else if (time_left == 0) {
@@ -78,6 +108,7 @@ static void * cpu_routine(void * args) {
 		/* Recheck process status after loading new process */
 		if (proc == NULL && done) {
 			/* No process to run, exit */
+			finished = 1;
 			printf("\tCPU %d stopped\n", id);
 			break;
 		}else if (proc == NULL) {
@@ -147,6 +178,7 @@ static void read_config(const char * path) {
 		exit(1);
 	}
 	fscanf(file, "%d %d %d\n", &time_slot, &num_cpus, &num_processes);
+
 	ld_processes.path = (char**)malloc(sizeof(char*) * num_processes);
 	ld_processes.start_time = (unsigned long*)
 		malloc(sizeof(unsigned long) * num_processes);
@@ -172,6 +204,7 @@ static void read_config(const char * path) {
 		fscanf(file, "%d", &(memswpsz[sit])); 
 
        fscanf(file, "\n"); /* Final character */
+	// ????????????????????????????????????
 #endif
 #endif
 
@@ -268,9 +301,43 @@ int main(int argc, char * argv[]) {
 	/* Stop timer */
 	stop_timer();
 
+#ifdef MM_PAGING
+	/* Free all MEMPHY */
+	for(sit = 0; sit < PAGING_MAX_MMSWP; sit++) {
+		free(mswp[sit].storage);
+		struct framephy_struct *fp = mswp[sit].free_fp_list;
+		while (fp != NULL) {
+			struct framephy_struct *tmp = fp;
+			fp = fp->fp_next;
+			free(tmp);
+		}
+		struct framephy_struct *fp_used = mswp[sit].used_fp_list;
+		while (fp_used != NULL) {
+			struct framephy_struct *tmp = fp_used;
+			fp_used = fp_used->fp_next;
+			free(tmp);
+		}
+	}
+	free(mram.storage);
+	free(mm_ld_args);
+	struct framephy_struct *fp = mram.free_fp_list;
+	while (fp != NULL) {
+		struct framephy_struct *tmp = fp;
+		fp = fp->fp_next;
+		free(tmp);
+	}
+	struct framephy_struct *fp_used = mram.used_fp_list;
+	while (fp_used != NULL) {
+		struct framephy_struct *tmp = fp_used;
+		fp_used = fp_used->fp_next;
+		free(tmp);
+	}
+#endif
+	free(args);
+	free(cpu);
+
 	return 0;
 
 }
-
 
 

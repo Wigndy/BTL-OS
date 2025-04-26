@@ -25,4 +25,6 @@ void add_proc(struct pcb_t * proc);
 
 #endif
 
+void delete_pcb(struct pcb_t * proc);
 
+void remove_pcb(struct pcb_t *proc);
