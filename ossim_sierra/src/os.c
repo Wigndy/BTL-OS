@@ -13,6 +13,7 @@
 static int time_slot;
 static int num_cpus;
 static int done = 0;
+static int finished = 0;
 
 #ifdef MM_PAGING
 static int memramsz;
@@ -82,9 +83,13 @@ static void * cpu_routine(void * args) {
 		 	* ready queue */
 			proc = get_proc();
 			if (proc == NULL) {
-                           next_slot(timer_id);
-                           continue; /* First load failed. skip dummy load */
-                        }
+				if (finished) {
+					printf("\tCPU %d stopped\n", id);
+					break;
+				}
+                next_slot(timer_id);
+                continue; /* First load failed. skip dummy load */
+            }
 		}else if (proc->pc == proc->code->size) {
 			/* The porcess has finish it job */
 			printf("\tCPU %d: Processed %2d has finished\n",
@@ -103,6 +108,7 @@ static void * cpu_routine(void * args) {
 		/* Recheck process status after loading new process */
 		if (proc == NULL && done) {
 			/* No process to run, exit */
+			finished = 1;
 			printf("\tCPU %d stopped\n", id);
 			break;
 		}else if (proc == NULL) {

@@ -101,9 +101,9 @@ void put_proc(struct pcb_t * proc) {
 	// proc->running_list = & running_list;
 
 	/* TODO: put running proc to running_list */
-	put_mlq_proc(proc);
 
 	pthread_mutex_lock(&queue_lock);
+	enqueue(&mlq_ready_queue[proc->prio], proc);
 	remove_proc(&running_list, proc);
 	proc->running_list = NULL;
 	pthread_mutex_unlock(&queue_lock);
