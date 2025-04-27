@@ -53,7 +53,7 @@
  
          int same_name = check_name(proc_name, proc->path);
          if (same_name == 1) {
-             printf("Process %s with PID: %2d killed\n", proc_name, proc->pid);
+             printf("Process %s with PID: %2d is killed\n", proc_name, proc->pid);
              if (proc->running_list != NULL) {
                 remove_proc(proc->running_list, proc);
                 proc->running_list = NULL;
