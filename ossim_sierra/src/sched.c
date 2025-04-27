@@ -205,8 +205,6 @@ void delete_pcb(struct pcb_t *proc)
 }
 
 void remove_pcb(struct pcb_t *proc) {	
-	while (proc->running_list != NULL && proc->pc != proc->code->size) { }
-
 	pthread_mutex_lock(&queue_lock);
 
 	if (proc->running_list != NULL) {
@@ -222,6 +220,6 @@ void remove_pcb(struct pcb_t *proc) {
 
 	delete_pcb(proc);
 	free(proc);
-
+	
 	pthread_mutex_unlock(&queue_lock);
 }

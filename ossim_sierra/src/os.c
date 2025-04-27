@@ -90,7 +90,7 @@ static void * cpu_routine(void * args) {
                 next_slot(timer_id);
                 continue; /* First load failed. skip dummy load */
             }
-		}else if (proc->pc == proc->code->size) {
+		}else if (proc->pc >= proc->code->size) {
 			/* The porcess has finish it job */
 			printf("\tCPU %d: Processed %2d has finished\n",
 				id ,proc->pid);
@@ -125,6 +125,15 @@ static void * cpu_routine(void * args) {
 		/* Run current process */
 		run(proc);
 		time_left--;
+
+		if (proc->running_list == NULL) {
+			printf("\tCPU %d: Processed %2d has finished\n",
+				id ,proc->pid);
+			remove_pcb(proc);
+			proc = NULL;
+			time_left = 0;
+		}
+
 		next_slot(timer_id);
 	}
 	detach_event(timer_id);
