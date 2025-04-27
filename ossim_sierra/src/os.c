@@ -126,13 +126,13 @@ static void * cpu_routine(void * args) {
 		run(proc);
 		time_left--;
 
-		if (proc->running_list == NULL) {
-			printf("\tCPU %d: Processed %2d has finished\n",
-				id ,proc->pid);
-			remove_pcb(proc);
-			proc = NULL;
-			time_left = 0;
-		}
+		// if (proc->running_list == NULL) {
+		// 	printf("\tCPU %d: Processed %2d has finished\n",
+		// 		id ,proc->pid);
+		// 	remove_pcb(proc);
+		// 	proc = NULL;
+		// 	time_left = 0;
+		// }
 
 		next_slot(timer_id);
 	}
