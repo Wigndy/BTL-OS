@@ -119,7 +119,7 @@ static void * cpu_routine(void * args) {
 		}else if (time_left == 0) {
 			printf("\tCPU %d: Dispatched process %2d\n",
 				id, proc->pid);
-			time_left = time_slot;
+			time_left = proc->time_slot;
 		}
 		
 		/* Run current process */
@@ -288,7 +288,7 @@ int main(int argc, char * argv[]) {
 #endif
 
 	/* Init scheduler */
-	init_scheduler();
+	init_scheduler(time_slot);
 
 	/* Run CPU and loader */
 #ifdef MM_PAGING

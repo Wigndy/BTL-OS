@@ -99,6 +99,8 @@ struct pcb_t
 #endif
 	struct page_table_t *page_table; // Page table
 	uint32_t bp;			 // Break pointer
+
+	int time_slot;
 };
 
 #endif

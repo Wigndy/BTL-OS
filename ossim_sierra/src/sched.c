@@ -10,6 +10,7 @@ static struct queue_t run_queue;
 static pthread_mutex_t queue_lock;
 
 static struct queue_t running_list;
+static int time_slot;
 #ifdef MLQ_SCHED
 static struct queue_t mlq_ready_queue[MAX_PRIO];
 static int slot[MAX_PRIO];
@@ -25,7 +26,7 @@ int queue_empty(void) {
 	return (empty(&ready_queue) && empty(&run_queue));
 }
 
-void init_scheduler(void) {
+void init_scheduler(int time_slot_num) {
 #ifdef MLQ_SCHED
     int i ;
 
@@ -36,6 +37,7 @@ void init_scheduler(void) {
 #endif
 	ready_queue.size = 0;
 	run_queue.size = 0;
+	time_slot = time_slot_num;
 	pthread_mutex_init(&queue_lock, NULL);
 }
 
@@ -59,7 +61,13 @@ struct pcb_t * get_mlq_proc(void) {
 		if (slot[i] == 0) continue;
 		proc = dequeue(&mlq_ready_queue[i]);
 		if (proc != NULL) {
-			--slot[i];
+			int proc_time_slot = proc->code->size - proc->pc;
+
+			if (proc_time_slot > slot[i]) proc_time_slot = slot[i];
+			if (proc_time_slot > time_slot) proc_time_slot = time_slot;
+
+			slot[i] -= proc_time_slot;
+			proc->time_slot = proc_time_slot;
 			reset_slot = 1;
 			break;
 		}
@@ -136,6 +144,7 @@ struct pcb_t * get_proc(void) {
 	if (proc != NULL) {
 		proc->running_list = &running_list;
 		enqueue(&running_list, proc);
+		proc->time_slot = time_slot;
 	}
 
 	pthread_mutex_unlock(&queue_lock);
