@@ -199,7 +199,7 @@
  
    
    printf("===== PHYSICAL MEMORY AFTER DEALLOCATION =====\n");
-   printf("PID=%d - Region=%d \n", proc->pid, reg_index);
+   printf("PID=%d - Region=%d\n", proc->pid, reg_index);
    print_pgtbl(proc, 0, -1);
    printf("================================================================\n");
    return ans;
