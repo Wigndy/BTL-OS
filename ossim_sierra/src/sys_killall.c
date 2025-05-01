@@ -11,10 +11,14 @@
  #include "common.h"
  #include "syscall.h"
  #include <stdio.h>
+ #include <pthread.h>
+
  #include "libmem.h"
  #include "queue.h" //????????????????
  #include "stdlib.h" //????????????????
  #include "sched.h" //????????????????
+
+ extern pthread_mutex_t queue_lock;
  
  int check_name(char *proc_name, char *path)
  {
@@ -72,6 +76,7 @@
  
  int __sys_killall(struct pcb_t *caller, struct sc_regs* regs)
  {
+     pthread_mutex_lock(&queue_lock);
      char proc_name[100];
      uint32_t data;
  
@@ -140,5 +145,6 @@
      //     #endif
      //     free(proc);
      // }
+     pthread_mutex_unlock(&queue_lock);
      return killed_count; // Expected output
  }

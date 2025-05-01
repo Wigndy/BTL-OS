@@ -7,7 +7,7 @@
 #include <stdio.h>
 static struct queue_t ready_queue;
 static struct queue_t run_queue;
-static pthread_mutex_t queue_lock;
+pthread_mutex_t queue_lock;
 
 static struct queue_t running_list;
 static int time_slot;
@@ -236,7 +236,7 @@ void delete_pcb(struct pcb_t *proc)
 }
 
 void remove_pcb(struct pcb_t *proc) {	
-	pthread_mutex_lock(&queue_lock);
+	// pthread_mutex_lock(&queue_lock);
 
 	if (proc->running_list != NULL) {
 		remove_proc(proc->running_list, proc);
@@ -252,5 +252,5 @@ void remove_pcb(struct pcb_t *proc) {
 	delete_pcb(proc);
 	free(proc);
 	
-	pthread_mutex_unlock(&queue_lock);
+	// pthread_mutex_unlock(&queue_lock);
 }
