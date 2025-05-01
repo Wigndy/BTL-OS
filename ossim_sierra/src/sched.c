@@ -80,6 +80,28 @@ struct pcb_t * get_mlq_proc(void) {
 	else if (reset_slot == 1) {
 		for (int i = 0; i < MAX_PRIO; i++)
 			slot[i] = MAX_PRIO - i;
+		reset_slot = 0;
+		// Get proc after reset slot
+		for (int i = 0; i < MAX_PRIO; i++) {
+			if (slot[i] == 0) continue;
+			proc = dequeue(&mlq_ready_queue[i]);
+			if (proc != NULL) {
+				int proc_time_slot = proc->code->size - proc->pc;
+	
+				if (proc_time_slot > slot[i]) proc_time_slot = slot[i];
+				if (proc_time_slot > time_slot) proc_time_slot = time_slot;
+	
+				slot[i] -= proc_time_slot;
+				proc->time_slot = proc_time_slot;
+				reset_slot = 1;
+				break;
+			}
+		}
+
+		if (proc != NULL) {
+			enqueue(&running_list, proc);
+			proc->running_list = &running_list;
+		}
 	}
 
 	pthread_mutex_unlock(&queue_lock);
