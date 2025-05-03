@@ -1,6 +1,6 @@
-5
-ALLOC 300 0
-CALC
-WRITE 0 20 100
-READ 0 20 1
-FREE 0
+5 5
+alloc 300 0
+calc
+write 0 20 100
+read 0 20 1
+free 0

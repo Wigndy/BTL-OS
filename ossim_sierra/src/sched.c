@@ -27,16 +27,17 @@ static unsigned long target_latency = 20; // 20ms target latency
 static unsigned long total_weight = 0;    // Total weight of all tasks
 static unsigned long min_vruntime = 0;    // System-wide minimum vruntime
 
-// Niceness to weight conversion table (approximation of Linux's formula)
+// // Niceness to weight conversion table (approximation of Linux's formula)
+
 static const unsigned long sched_prio_to_weight[40] = {
-    /* -20 */ 88761, 71755, 56483, 46273, 36291,
-    /* -15 */ 29154, 23254, 18705, 14949, 11916,
-    /* -10 */ 9548, 7620, 6100, 4904, 3906,
-    /* -5 */ 3121, 2501, 1991, 1586, 1277,
-    /* 0 */ 1024, 820, 655, 526, 423,
-    /* 5 */ 335, 272, 215, 172, 137,
-    /* 10 */ 110, 87, 70, 56, 45,
-    /* 15 */ 36, 29, 23, 18, 15,
+    4096, 3822, 3566, 3327, 3104, 
+    2896, 2702, 2521, 2353, 2195, 
+    2048, 1911, 1783, 1663, 1552, 
+    1448, 1351, 1261, 1176, 1097, 
+    1024, 955, 891, 832, 776, 
+    724, 676, 630, 588, 549, 
+    512, 478, 446, 416, 388, 
+    362, 338, 315, 294, 274
 };
 #endif
 
