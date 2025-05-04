@@ -1,0 +1,7 @@
+5 1 5
+1048576 16777216 0 0 0
+0 p0_cfs_nice_0
+10 p1_cfs_nice_neg10
+20 p3_cfs_nice_neg20
+30 p2_cfs_nice_pos10
+40 p4_cfs_nice_pos19

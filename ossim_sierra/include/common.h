@@ -27,7 +27,7 @@
 enum ins_opcode_t
 {
 	CALC,  // Just perform calculation, only use CPU
-	alloc, // Allocate memory
+	ALLOC, // Allocate memory
 	FREE,  // Deallocated a memory block
 	READ,  // Write data to a byte on memory
 	WRITE, // Read data from a byte on memory

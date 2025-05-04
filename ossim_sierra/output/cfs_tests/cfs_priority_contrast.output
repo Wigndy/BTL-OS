@@ -1,0 +1,106 @@
+Time slot   0
+ld_routine
+	Loaded a process at input/proc/p3_cfs_nice_neg20, PID: 1 NICE: -20
+Time slot   1
+===== PHYSICAL MEMORY AFTER ALLOCATION =====
+PID=1 - Region=0 - Address=0x0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000001
+00000004: 80000000
+Page Number: 0 -> Frame Number: 1
+Page Number: 1 -> Frame Number: 0
+================================================================
+	Loaded a process at input/proc/p0_cfs_nice_0, PID: 2 NICE: 0
+Time slot   2
+	CPU 0: Put process  1 to run queue
+	CPU 0: Dispatched process  2 (CFS Slice: 5)
+===== PHYSICAL MEMORY AFTER ALLOCATION =====
+PID=2 - Region=0 - Address=0x0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000003
+00000004: 80000002
+Page Number: 0 -> Frame Number: 3
+Page Number: 1 -> Frame Number: 2
+================================================================
+	Loaded a process at input/proc/p4_cfs_nice_pos19, PID: 3 NICE: 19
+Time slot   3
+Time slot   4
+===== PHYSICAL MEMORY AFTER WRITING =====
+Adress: 100
+Page: 0 -> frame: 3
+================================================================
+Time slot   5
+Page: 0 -> frame: 3
+===== PHYSICAL MEMORY AFTER READING =====
+================================================================
+Time slot   6
+===== PHYSICAL MEMORY AFTER DEALLOCATION =====
+PID=2 - Region=0 - Address=0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000003
+00000004: 80000002
+Page Number: 0 -> Frame Number: 3
+Page Number: 1 -> Frame Number: 2
+================================================================
+Time slot   7
+	CPU 0: Processed  2 has finished
+	CPU 0: Dispatched process  1 (CFS Slice: 298)
+Time slot   8
+===== PHYSICAL MEMORY AFTER WRITING =====
+Adress: 103
+Page: 0 -> frame: 1
+================================================================
+Time slot   9
+Page: 0 -> frame: 1
+===== PHYSICAL MEMORY AFTER READING =====
+================================================================
+Time slot  10
+===== PHYSICAL MEMORY AFTER DEALLOCATION =====
+PID=1 - Region=0 - Address=0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000001
+00000004: 80000000
+Page Number: 0 -> Frame Number: 1
+Page Number: 1 -> Frame Number: 0
+================================================================
+Time slot  11
+	CPU 0: Processed  1 has finished
+	CPU 0: Dispatched process  3 (CFS Slice: 1)
+===== PHYSICAL MEMORY AFTER ALLOCATION =====
+PID=3 - Region=0 - Address=0x0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000005
+00000004: 80000004
+Page Number: 0 -> Frame Number: 5
+Page Number: 1 -> Frame Number: 4
+================================================================
+Time slot  12
+	CPU 0: Put process  3 to run queue
+	CPU 0: Dispatched process  3 (CFS Slice: 1)
+Time slot  13
+	CPU 0: Put process  3 to run queue
+	CPU 0: Dispatched process  3 (CFS Slice: 1)
+===== PHYSICAL MEMORY AFTER WRITING =====
+Adress: 104
+Page: 0 -> frame: 5
+================================================================
+Time slot  14
+	CPU 0: Put process  3 to run queue
+	CPU 0: Dispatched process  3 (CFS Slice: 1)
+Page: 0 -> frame: 5
+===== PHYSICAL MEMORY AFTER READING =====
+================================================================
+Time slot  15
+	CPU 0: Put process  3 to run queue
+	CPU 0: Dispatched process  3 (CFS Slice: 1)
+===== PHYSICAL MEMORY AFTER DEALLOCATION =====
+PID=3 - Region=0 - Address=0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000005
+00000004: 80000004
+Page Number: 0 -> Frame Number: 5
+Page Number: 1 -> Frame Number: 4
+================================================================
+Time slot  16
+	CPU 0: Processed  3 has finished
+	CPU 0 stopped

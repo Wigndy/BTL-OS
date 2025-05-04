@@ -93,9 +93,22 @@ static void * cpu_routine(void * args) {
 			next_slot(timer_id);
 			continue;
 		}else if (time_left == 0) {
-			printf("\tCPU %d: Dispatched process %2d\n",
-				id, proc->pid);
+			/* The process needs to be dispatched or re-dispatched */
+			printf("\tCPU %d: Dispatched process %2d", id, proc->pid);
+
+#ifdef CFS_SCHED
+			// Use dynamic time slice calculated by CFS
+			time_left = calc_time_slice(proc);
+			printf(" (CFS Slice: %d)\n", time_left); // Optional: Add log for clarity
+#else
+			// Use the fixed time_slot for other/default schedulers
 			time_left = time_slot;
+			printf(" (Fixed Slice: %d)\n", time_left); // Optional: Add log for clarity
+#endif
+            // Ensure time_left is at least 1 if proc is valid
+            if (time_left < 1 && proc != NULL) { 
+                time_left = 1; 
+            }
 		}
 		
 		/* Run current process */
