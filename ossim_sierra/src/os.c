@@ -277,7 +277,7 @@ int main(int argc, char * argv[]) {
 #endif
 
 	/* Init scheduler */
-	init_scheduler();
+	init_scheduler(time_slot);
 
 	/* Run CPU and loader */
 #ifdef MM_PAGING

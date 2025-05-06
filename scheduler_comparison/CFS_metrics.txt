@@ -1,0 +1,14 @@
+Processing log file: scheduler_comparison/cfs_output.log
+Maximum time slot found: 26
+PID 1: Load=0, Finish=26, Response=22, Turnaround=26, Wait=22
+PID 2: Load=1, Finish=7, Response=1, Turnaround=6, Wait=1
+PID 3: Load=4, Finish=12, Response=3, Turnaround=8, Wait=3
+PID 4: Load=5, Finish=17, Response=7, Turnaround=12, Wait=7
+PID 5: Load=7, Finish=22, Response=10, Turnaround=15, Wait=10
+
+SUMMARY:
+Total processes: 5
+Average wait time: 8.60 time units
+Average turnaround time: 13.40 time units
+Average response time: 8.60 time units
+Total time: 26 time units

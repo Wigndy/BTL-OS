@@ -40,6 +40,7 @@ static const unsigned long sched_prio_to_weight[40] = {
     362, 338, 315, 294, 274
 };
 #endif
+static int time_slot;
 
 int queue_empty(void)
 {
@@ -56,8 +57,9 @@ int queue_empty(void)
     return (empty(&ready_queue) && empty(&run_queue));
 }
 
-void init_scheduler(void)
+void init_scheduler(int _time_slot)
 {
+    time_slot = _time_slot;
 #ifdef MLQ_SCHED
     int i;
     for (i = 0; i < MAX_PRIO; i++)
@@ -81,7 +83,64 @@ void init_scheduler(void)
 #ifdef MLQ_SCHED
 struct pcb_t *get_mlq_proc(void)
 {
-    // [MLQ implementation code...]
+    static int reset_slot = 0;
+	struct pcb_t * proc = NULL;
+	/*TODO: get a process from PRIORITY [ready_queue].
+	 * Remember to use lock to protect the queue.
+	 * */
+
+	pthread_mutex_lock(&queue_lock);
+
+	for (int i = 0; i < MAX_PRIO; i++) {
+		if (slot[i] == 0) continue;
+		proc = dequeue(&mlq_ready_queue[i]);
+		if (proc != NULL) {
+			int proc_time_slot = proc->code->size - proc->pc;
+
+			if (proc_time_slot > slot[i]) proc_time_slot = slot[i];
+			if (proc_time_slot > time_slot) proc_time_slot = time_slot;
+
+			slot[i] -= proc_time_slot;
+			proc->time_slot = proc_time_slot;
+			reset_slot = 1;
+			break;
+		}
+	}
+
+	if (proc != NULL) {
+		enqueue(&running_list, proc);
+		proc->running_list = &running_list;
+	}
+	else if (reset_slot == 1) {
+		for (int i = 0; i < MAX_PRIO; i++)
+			slot[i] = MAX_PRIO - i;
+		reset_slot = 0;
+		// Get proc after reset slot
+		for (int i = 0; i < MAX_PRIO; i++) {
+			if (slot[i] == 0) continue;
+			proc = dequeue(&mlq_ready_queue[i]);
+			if (proc != NULL) {
+				int proc_time_slot = proc->code->size - proc->pc;
+	
+				if (proc_time_slot > slot[i]) proc_time_slot = slot[i];
+				if (proc_time_slot > time_slot) proc_time_slot = time_slot;
+	
+				slot[i] -= proc_time_slot;
+				proc->time_slot = proc_time_slot;
+				reset_slot = 1;
+				break;
+			}
+		}
+
+		if (proc != NULL) {
+			enqueue(&running_list, proc);
+			proc->running_list = &running_list;
+		}
+	}
+
+	pthread_mutex_unlock(&queue_lock);
+
+	return proc;	
 }
 
 void put_mlq_proc(struct pcb_t *proc)
@@ -123,25 +182,20 @@ static void init_cfs_proc(struct pcb_t *proc)
 // Update vruntime based on execution time
 static void update_vruntime(struct pcb_t *proc, unsigned long execution_time)
 {
-    // vruntime += (execution_time * 1024) / weight
-    // Scale by 1024 to maintain precision with integer division
     proc->vruntime += (execution_time * 1024) / proc->weight;
 
-    // Update system-wide minimum vruntime
     if (proc->vruntime < min_vruntime)
         min_vruntime = proc->vruntime;
 }
 
-// Calculate time slice for a process based on its weight and total weight
 unsigned long calc_time_slice(struct pcb_t *proc)
-{
-    // time_slice = (proc->weight / total_weight) * target_latency
+{ 
     if (total_weight == 0)
-        return 1; // Fallback to 1 time unit if no processes
+        return 1;  
 
     unsigned long time_slice = (proc->weight * target_latency) / total_weight;
     if (time_slice < 1)
-        time_slice = 1; // Minimum time slice of 1 time unit
+        time_slice = 1; 
 
     return time_slice;
 }
@@ -149,13 +203,11 @@ unsigned long calc_time_slice(struct pcb_t *proc)
 struct pcb_t *get_cfs_proc(void)
 {
     pthread_mutex_lock(&queue_lock);
-
-    // Get the process with the smallest vruntime from the RB tree
+ 
     struct pcb_t *proc = rb_extract_min(&cfs_rq);
 
     if (proc != NULL)
-    {
-        // Update total weight when removing a process
+    { 
         total_weight -= proc->weight;
     }
 
@@ -167,14 +219,10 @@ void put_cfs_proc(struct pcb_t *proc)
 {
     pthread_mutex_lock(&queue_lock);
 
-    // Update vruntime based on how long the process executed
-    // For simplicity, assume it executed for 1 time slice
     update_vruntime(proc, 1);
 
-    // Re-insert the process into the RB tree
     rb_insert(&cfs_rq, proc);
 
-    // Update total weight when adding a process back
     total_weight += proc->weight;
 
     pthread_mutex_unlock(&queue_lock);
@@ -184,10 +232,8 @@ void add_cfs_proc(struct pcb_t *proc)
 {
     pthread_mutex_lock(&queue_lock);
 
-    // Initialize the process for CFS scheduling
     init_cfs_proc(proc);
 
-    // Insert the process into the RB tree
     rb_insert(&cfs_rq, proc);
 
     pthread_mutex_unlock(&queue_lock);

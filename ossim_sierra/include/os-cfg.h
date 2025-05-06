@@ -10,5 +10,7 @@
 //#define MMDBG 1
 // #define IODUMP 1
 // #define PAGETBL_DUMP 1
-#define CFS_SCHED 1
+// #define CFS_SCHED 1
+#define TEST_COMPARISON 1
+// #define MLQ_SCHED 1
 #endif

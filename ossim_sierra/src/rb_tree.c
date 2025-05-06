@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef CFS_SCHED
 // Left rotation around node x
 static void rb_rotate_left(struct rb_tree *tree, struct rb_node *x) {
     struct rb_node *y = x->right;
@@ -44,7 +45,7 @@ static void rb_rotate_right(struct rb_tree *tree, struct rb_node *y) {
     y->parent = x;
 }
 
-// Fix the red-black tree after insertion
+// Fix red-black tree properties after insertion
 static void rb_insert_fixup(struct rb_tree *tree, struct rb_node *z) {
     while (z->parent->color == RB_RED) {
         if (z->parent == z->parent->parent->left) {
@@ -84,15 +85,11 @@ static void rb_insert_fixup(struct rb_tree *tree, struct rb_node *z) {
                 rb_rotate_left(tree, z->parent->parent);
             }
         }
-        
-        if (z == tree->root)
-            break;
     }
     
     tree->root->color = RB_BLACK;
 }
 
-// Fix the red-black tree after deletion
 static void rb_delete_fixup(struct rb_tree *tree, struct rb_node *x) {
     while (x != tree->root && x->color == RB_BLACK) {
         if (x == x->parent->left) {
@@ -251,7 +248,7 @@ struct pcb_t *rb_extract_min(struct rb_tree *tree) {
             x->parent = y;
         else {
             if (y->parent == tree->nil)
-                tree->root = y->right;
+                tree->root = y;
             else if (y == y->parent->left)
                 y->parent->left = y->right;
             else
@@ -292,3 +289,31 @@ void rb_remove(struct rb_tree *tree, struct pcb_t *proc) {
 int rb_empty(struct rb_tree *tree) {
     return tree->root == tree->nil;
 }
+
+#else  // MLQ_SCHED
+
+// Provide empty stub implementations for MLQ mode
+
+void rb_init(struct rb_tree *tree) {
+    // Empty implementation for MLQ
+}
+
+void rb_insert(struct rb_tree *tree, struct pcb_t *proc) {
+    // Empty implementation for MLQ
+}
+
+struct pcb_t *rb_extract_min(struct rb_tree *tree) {
+    // Empty implementation for MLQ
+    return NULL;
+}
+
+void rb_remove(struct rb_tree *tree, struct pcb_t *proc) {
+    // Empty implementation for MLQ
+}
+
+int rb_empty(struct rb_tree *tree) {
+    // Empty implementation for MLQ
+    return 1;
+}
+
+#endif // CFS_SCHED

@@ -1,0 +1,7 @@
+1 1 5
+1048576 16777216 0 0 0
+0 comparison/proc_high.txt
+2 comparison/proc_med_high.txt
+4 comparison/proc_medium.txt
+6 comparison/proc_med_low.txt
+8 comparison/proc_low.txt

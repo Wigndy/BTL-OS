@@ -26,8 +26,8 @@
 
 enum ins_opcode_t
 {
-	CALC,  // Just perform calculation, only use CPU
-	ALLOC, // Allocate memory
+	CALC,  
+	ALLOC, 
 	FREE,  // Deallocated a memory block
 	READ,  // Write data to a byte on memory
 	WRITE, // Read data from a byte on memory
@@ -84,6 +84,7 @@ struct pcb_t // Dynamic
 	uint32_t pc;			 // Program pointer, point to the next instruction
 	struct queue_t *ready_queue;
 	struct queue_t *running_list;
+	int time_slot; // Time slot for the process
 #ifdef MLQ_SCHED
 	struct queue_t *mlq_ready_queue;
 	// Priority on execution (if supported), on-fly aka. changeable

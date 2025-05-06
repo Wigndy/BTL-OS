@@ -1,5 +1,9 @@
 # CFS Honored Assignment 242
 
+## Team Members
+- Lê Nguyễn Kim Khôi - 2311671
+- Hồ Anh Dũng - 2310543
+
 ## Overview
 
 This project implements the Completely Fair Scheduler (CFS) for a simple operating system simulation. CFS is the default scheduler of the Linux kernel since version 2.6.23 and aims to maximize overall CPU utilization while providing a fair distribution of CPU time among processes.
@@ -47,16 +51,61 @@ The implementation includes test processes with different niceness values:
 
 ## How to Run
 
+### Using the run.sh Script
+The easiest way to run all tests is to use the provided run.sh script:
+
 ```bash
-# Clean and build
+# Make the script executable
+chmod +x run.sh
+
+# Run all tests (CFS tests, MLQ tests, and comparison)
+./run.sh
+```
+
+### Manual Testing with CFS
+
+```bash
+# Clean and build with CFS scheduler enabled
+cd ossim_sierra
+# Edit include/os-cfg.h to enable CFS: uncomment #define CFS_SCHED 1
+# Comment out MLQ_SCHED if it's enabled
 make clean
 make
 
-# Run the CFS test
-./os cfs_test > output_cfs.txt
+# Run specific tests
+./os input/cfs_test > ../output/cfs_output.log
+./os input/cfs_high_load > ../output/cfs_high_load.log
+./os input/cfs_full_niceness_range > ../output/cfs_niceness.log
+```
 
-# View results
-cat output_cfs.txt
+### Manual Testing with MLQ
+
+```bash
+# Clean and build with MLQ scheduler enabled
+cd ossim_sierra
+# Edit include/os-cfg.h to enable MLQ: uncomment #define MLQ_SCHED 1
+# Comment out CFS_SCHED if it's enabled
+make clean
+make
+
+# Run the same tests with MLQ scheduler
+./os input/cfs_test > ../output/mlq_output.log
+```
+
+### Running Scheduler Comparison
+
+```bash
+# Set up test environment
+mkdir -p scheduler_comparison
+
+# Run comparison script
+./compare_schedulers.sh
+
+# View comparison results
+cat scheduler_comparison/comparison_report.txt
+
+# View visualized comparison (requires matplotlib)
+python3 visualize_comparison.py
 ```
 
 ## Expected Results
@@ -67,4 +116,5 @@ When running the CFS test, you should observe that:
 - The process with the lowest vruntime is always selected next
 - vruntime accumulates more slowly for higher-priority processes
 
-This demonstrates how CFS achieves both fairness and priority-based scheduling simultaneously, resolving the traditional tradeoff between throughput and responsiveness.
+The comparison with MLQ shows how CFS achieves both fairness and priority-based scheduling simultaneously, resolving the traditional tradeoff between throughput and responsiveness.
+

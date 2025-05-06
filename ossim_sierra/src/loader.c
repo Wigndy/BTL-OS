@@ -42,23 +42,6 @@ struct pcb_t * load(const char * path) {
 	proc->bp = PAGE_SIZE;
 	proc->pc = 0;
 	
-	#ifdef CFS_SCHED
-	proc->vruntime = 0;
-    // Set niceness based on process name
-    if (strstr(path, "nice_neg20")) {
-        proc->niceness = -20;
-    } else if (strstr(path, "nice_neg10")) {
-        proc->niceness = -10;
-    } else if (strstr(path, "nice_pos10")) {
-        proc->niceness = 10;
-    } else if (strstr(path, "nice_pos19")) {
-        proc->niceness = 19;
-    } else {
-        proc->niceness = 0; // Default niceness
-    }
-    
-    // Initial vruntime and weight will be set in add_cfs_proc
-#endif
 	/* Read process code from file */
 	FILE * file;
 	if ((file = fopen(path, "r")) == NULL) {
@@ -72,6 +55,20 @@ struct pcb_t * load(const char * path) {
 	proc->code->text = (struct inst_t*)malloc(
 		sizeof(struct inst_t) * proc->code->size
 	);
+#ifdef CFS_SCHED
+	proc->vruntime = 0;
+	proc->niceness = proc->priority;
+#endif
+#ifdef MLQ_SCHED
+	#ifdef TEST_COMPARISON
+	proc->prio = MAX_PRIO - 1 - proc->priority;
+	if (proc->prio >= MAX_PRIO) proc->prio = MAX_PRIO - 1;
+	if (proc->prio < 0) proc->prio = 0;
+	printf("[TEST] Mapped priority %u to MLQ priority %lu\n", proc->priority, proc->prio);
+	#else
+	proc->prio = proc->priority; 
+	#endif
+#endif
 	uint32_t i = 0;
 	char buf[200];
 	for (i = 0; i < proc->code->size; i++) {

@@ -3,14 +3,11 @@
 
 #include "common.h"
 
-// Remove commented out MLQ_SCHED definition
-// It's already properly controlled via os-cfg.h
-
 #define MAX_PRIO 140
 
 int queue_empty(void);
 
-void init_scheduler(void);
+void init_scheduler(int time_slot);
 void finish_scheduler(void);
 
 /* Get the next process from ready queue */
