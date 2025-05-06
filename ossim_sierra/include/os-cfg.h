@@ -1,7 +1,7 @@
 #ifndef OSCFG_H
 #define OSCFG_H
+#define MLQ_SCHED 1
 
-// #define MLQ_SCHED 1
 #define MAX_PRIO 140
 
 #define MM_PAGING
@@ -11,6 +11,5 @@
 // #define IODUMP 1
 // #define PAGETBL_DUMP 1
 // #define CFS_SCHED 1
-#define TEST_COMPARISON 1
-// #define MLQ_SCHED 1
+// #define TEST_COMPARISON 1
 #endif

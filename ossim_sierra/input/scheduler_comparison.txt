@@ -5,3 +5,14 @@
 4 comparison/proc_medium.txt
 6 comparison/proc_med_low.txt
 8 comparison/proc_low.txt
+10 comparison/proc_med_high.txt
+12 comparison/proc_med_high.txt
+14 comparison/proc_high.txt
+16 comparison/proc_low.txt
+18 comparison/proc_low.txt
+20 comparison/proc_low.txt
+23 comparison/proc_high.txt
+27 comparison/proc_high.txt
+29 comparison/proc_high.txt
+32 comparison/proc_high.txt
+35 comparison/proc_high.txt

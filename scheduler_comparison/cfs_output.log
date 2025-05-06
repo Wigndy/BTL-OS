@@ -33,8 +33,8 @@ Time slot   5
 Page: 0 -> frame: 3
 ===== PHYSICAL MEMORY AFTER READING =====
 ================================================================
-	Loaded a process at input/proc/comparison/proc_med_low.txt, PID: 4 NICE: 15
 Time slot   6
+	Loaded a process at input/proc/comparison/proc_med_low.txt, PID: 4 NICE: 15
 ===== PHYSICAL MEMORY AFTER DEALLOCATION =====
 PID=2 - Region=0 - Address=0 - Size=300 byte
 print_pgtbl: 0 - 512
@@ -54,8 +54,8 @@ print_pgtbl: 0 - 512
 Page Number: 0 -> Frame Number: 5
 Page Number: 1 -> Frame Number: 4
 ================================================================
-	Loaded a process at input/proc/comparison/proc_low.txt, PID: 5 NICE: 19
-Time slot   8
+	Loaded a process at input/proc/comparison/proc_low.txt, PID: 5Time slot   8
+ NICE: 19
 Time slot   9
 ===== PHYSICAL MEMORY AFTER WRITING =====
 Adress: 102

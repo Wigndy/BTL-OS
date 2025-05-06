@@ -1,6 +1,7 @@
 Time slot   0
 ld_routine
-	Loaded a process at input/proc/comparison/proc_high.txt, PID: 1
+[TEST] Mapped priority 0 to MLQ priority 139
+	Loaded a process at input/proc/comparison/proc_high.txt, PID: 1 PRIO: 2
 Time slot   1
 ===== PHYSICAL MEMORY AFTER ALLOCATION =====
 PID=1 - Region=0 - Address=0x0 - Size=300 byte
@@ -10,38 +11,10 @@ print_pgtbl: 0 - 512
 Page Number: 0 -> Frame Number: 1
 Page Number: 1 -> Frame Number: 0
 ================================================================
-	Loaded a process at input/proc/comparison/proc_med_high.txt, PID: 2
+[TEST] Mapped priority 0 to MLQ priority 139
+	Loaded a process at input/proc/comparison/proc_high.txt, PID: 2 PRIO: 0
 Time slot   2
 	CPU 0: Put process  1 to run queue
-	CPU 0: Dispatched process  1 (Fixed Slice: 1)
-Time slot   3
-	CPU 0: Put process  1 to run queue
-	CPU 0: Dispatched process  1 (Fixed Slice: 1)
-===== PHYSICAL MEMORY AFTER WRITING =====
-Adress: 100
-Page: 0 -> frame: 1
-================================================================
-	Loaded a process at input/proc/comparison/proc_medium.txt, PID: 3
-Time slot   4
-	CPU 0: Put process  1 to run queue
-	CPU 0: Dispatched process  1 (Fixed Slice: 1)
-Page: 0 -> frame: 1
-===== PHYSICAL MEMORY AFTER READING =====
-================================================================
-Time slot   5
-	CPU 0: Put process  1 to run queue
-	CPU 0: Dispatched process  1 (Fixed Slice: 1)
-===== PHYSICAL MEMORY AFTER DEALLOCATION =====
-PID=1 - Region=0 - Address=0 - Size=300 byte
-print_pgtbl: 0 - 512
-00000000: 80000001
-00000004: 80000000
-Page Number: 0 -> Frame Number: 1
-Page Number: 1 -> Frame Number: 0
-================================================================
-	Loaded a process at input/proc/comparison/proc_med_low.txt, PID: 4
-Time slot   6
-	CPU 0: Processed  1 has finished
 	CPU 0: Dispatched process  2 (Fixed Slice: 1)
 ===== PHYSICAL MEMORY AFTER ALLOCATION =====
 PID=2 - Region=0 - Address=0x0 - Size=300 byte
@@ -51,36 +24,10 @@ print_pgtbl: 0 - 512
 Page Number: 0 -> Frame Number: 3
 Page Number: 1 -> Frame Number: 2
 ================================================================
-Time slot   7
+[TEST] Mapped priority 0 to MLQ priority 139
+	Loaded a process at input/proc/comparison/proc_high.txt, PID: 3 PRIO: 0
+Time slot   3
 	CPU 0: Put process  2 to run queue
-	CPU 0: Dispatched process  2 (Fixed Slice: 1)
-	Loaded a process at input/proc/comparison/proc_low.txt, PID: 5
-Time slot   8
-	CPU 0: Put process  2 to run queue
-	CPU 0: Dispatched process  2 (Fixed Slice: 1)
-===== PHYSICAL MEMORY AFTER WRITING =====
-Adress: 101
-Page: 0 -> frame: 3
-================================================================
-Time slot   9
-	CPU 0: Put process  2 to run queue
-	CPU 0: Dispatched process  2 (Fixed Slice: 1)
-Page: 0 -> frame: 3
-===== PHYSICAL MEMORY AFTER READING =====
-================================================================
-Time slot  10
-	CPU 0: Put process  2 to run queue
-	CPU 0: Dispatched process  2 (Fixed Slice: 1)
-===== PHYSICAL MEMORY AFTER DEALLOCATION =====
-PID=2 - Region=0 - Address=0 - Size=300 byte
-print_pgtbl: 0 - 512
-00000000: 80000003
-00000004: 80000002
-Page Number: 0 -> Frame Number: 3
-Page Number: 1 -> Frame Number: 2
-================================================================
-Time slot  11
-	CPU 0: Processed  2 has finished
 	CPU 0: Dispatched process  3 (Fixed Slice: 1)
 ===== PHYSICAL MEMORY AFTER ALLOCATION =====
 PID=3 - Region=0 - Address=0x0 - Size=300 byte
@@ -90,35 +37,15 @@ print_pgtbl: 0 - 512
 Page Number: 0 -> Frame Number: 5
 Page Number: 1 -> Frame Number: 4
 ================================================================
-Time slot  12
+[TEST] Mapped priority 0 to MLQ priority 139
+	Loaded a process at input/proc/comparison/proc_high.txt, PID: 4 PRIO: 0
+Time slot   4
 	CPU 0: Put process  3 to run queue
-	CPU 0: Dispatched process  3 (Fixed Slice: 1)
-Time slot  13
-	CPU 0: Put process  3 to run queue
-	CPU 0: Dispatched process  3 (Fixed Slice: 1)
-===== PHYSICAL MEMORY AFTER WRITING =====
-Adress: 102
-Page: 0 -> frame: 5
-================================================================
-Time slot  14
-	CPU 0: Put process  3 to run queue
-	CPU 0: Dispatched process  3 (Fixed Slice: 1)
-Page: 0 -> frame: 5
-===== PHYSICAL MEMORY AFTER READING =====
-================================================================
-Time slot  15
-	CPU 0: Put process  3 to run queue
-	CPU 0: Dispatched process  3 (Fixed Slice: 1)
-===== PHYSICAL MEMORY AFTER DEALLOCATION =====
-PID=3 - Region=0 - Address=0 - Size=300 byte
-print_pgtbl: 0 - 512
-00000000: 80000005
-00000004: 80000004
-Page Number: 0 -> Frame Number: 5
-Page Number: 1 -> Frame Number: 4
-================================================================
-Time slot  16
-	CPU 0: Processed  3 has finished
+	CPU 0: Dispatched process  2 (Fixed Slice: 1)
+[TEST] Mapped priority 0 to MLQ priority 139
+	Loaded a process at input/proc/comparison/proc_high.txt, PID: 5 PRIO: 0
+Time slot   5
+	CPU 0: Put process  2 to run queue
 	CPU 0: Dispatched process  4 (Fixed Slice: 1)
 ===== PHYSICAL MEMORY AFTER ALLOCATION =====
 PID=4 - Region=0 - Address=0x0 - Size=300 byte
@@ -128,24 +55,102 @@ print_pgtbl: 0 - 512
 Page Number: 0 -> Frame Number: 7
 Page Number: 1 -> Frame Number: 6
 ================================================================
-Time slot  17
+Time slot   6
 	CPU 0: Put process  4 to run queue
+	CPU 0: Dispatched process  3 (Fixed Slice: 1)
+Time slot   7
+	CPU 0: Put process  3 to run queue
+	CPU 0: Dispatched process  5 (Fixed Slice: 1)
+===== PHYSICAL MEMORY AFTER ALLOCATION =====
+PID=5 - Region=0 - Address=0x0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000009
+00000004: 80000008
+Page Number: 0 -> Frame Number: 9
+Page Number: 1 -> Frame Number: 8
+================================================================
+Time slot   8
+	CPU 0: Put process  5 to run queue
+	CPU 0: Dispatched process  2 (Fixed Slice: 1)
+===== PHYSICAL MEMORY AFTER WRITING =====
+Adress: 100
+Page: 0 -> frame: 3
+================================================================
+Time slot   9
+	CPU 0: Put process  2 to run queue
 	CPU 0: Dispatched process  4 (Fixed Slice: 1)
-Time slot  18
+Time slot  10
 	CPU 0: Put process  4 to run queue
+	CPU 0: Dispatched process  3 (Fixed Slice: 1)
+===== PHYSICAL MEMORY AFTER WRITING =====
+Adress: 100
+Page: 0 -> frame: 5
+================================================================
+Time slot  11
+	CPU 0: Put process  3 to run queue
+	CPU 0: Dispatched process  5 (Fixed Slice: 1)
+Time slot  12
+	CPU 0: Put process  5 to run queue
+	CPU 0: Dispatched process  2 (Fixed Slice: 1)
+Page: 0 -> frame: 3
+===== PHYSICAL MEMORY AFTER READING =====
+================================================================
+Time slot  13
+	CPU 0: Put process  2 to run queue
 	CPU 0: Dispatched process  4 (Fixed Slice: 1)
 ===== PHYSICAL MEMORY AFTER WRITING =====
-Adress: 103
+Adress: 100
 Page: 0 -> frame: 7
 ================================================================
-Time slot  19
+Time slot  14
 	CPU 0: Put process  4 to run queue
+	CPU 0: Dispatched process  3 (Fixed Slice: 1)
+Page: 0 -> frame: 5
+===== PHYSICAL MEMORY AFTER READING =====
+================================================================
+Time slot  15
+	CPU 0: Put process  3 to run queue
+	CPU 0: Dispatched process  5 (Fixed Slice: 1)
+===== PHYSICAL MEMORY AFTER WRITING =====
+Adress: 100
+Page: 0 -> frame: 9
+================================================================
+Time slot  16
+	CPU 0: Put process  5 to run queue
+	CPU 0: Dispatched process  2 (Fixed Slice: 1)
+===== PHYSICAL MEMORY AFTER DEALLOCATION =====
+PID=2 - Region=0 - Address=0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000003
+00000004: 80000002
+Page Number: 0 -> Frame Number: 3
+Page Number: 1 -> Frame Number: 2
+================================================================
+Time slot  17
+	CPU 0: Processed  2 has finished
 	CPU 0: Dispatched process  4 (Fixed Slice: 1)
 Page: 0 -> frame: 7
 ===== PHYSICAL MEMORY AFTER READING =====
 ================================================================
-Time slot  20
+Time slot  18
 	CPU 0: Put process  4 to run queue
+	CPU 0: Dispatched process  3 (Fixed Slice: 1)
+===== PHYSICAL MEMORY AFTER DEALLOCATION =====
+PID=3 - Region=0 - Address=0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000005
+00000004: 80000004
+Page Number: 0 -> Frame Number: 5
+Page Number: 1 -> Frame Number: 4
+================================================================
+Time slot  19
+	CPU 0: Processed  3 has finished
+	CPU 0: Dispatched process  5 (Fixed Slice: 1)
+Page: 0 -> frame: 9
+===== PHYSICAL MEMORY AFTER READING =====
+================================================================
+Time slot  20
+	CPU 0: Put process  5 to run queue
 	CPU 0: Dispatched process  4 (Fixed Slice: 1)
 ===== PHYSICAL MEMORY AFTER DEALLOCATION =====
 PID=4 - Region=0 - Address=0 - Size=300 byte
@@ -158,33 +163,6 @@ Page Number: 1 -> Frame Number: 6
 Time slot  21
 	CPU 0: Processed  4 has finished
 	CPU 0: Dispatched process  5 (Fixed Slice: 1)
-===== PHYSICAL MEMORY AFTER ALLOCATION =====
-PID=5 - Region=0 - Address=0x0 - Size=300 byte
-print_pgtbl: 0 - 512
-00000000: 80000009
-00000004: 80000008
-Page Number: 0 -> Frame Number: 9
-Page Number: 1 -> Frame Number: 8
-================================================================
-Time slot  22
-	CPU 0: Put process  5 to run queue
-	CPU 0: Dispatched process  5 (Fixed Slice: 1)
-Time slot  23
-	CPU 0: Put process  5 to run queue
-	CPU 0: Dispatched process  5 (Fixed Slice: 1)
-===== PHYSICAL MEMORY AFTER WRITING =====
-Adress: 104
-Page: 0 -> frame: 9
-================================================================
-Time slot  24
-	CPU 0: Put process  5 to run queue
-	CPU 0: Dispatched process  5 (Fixed Slice: 1)
-Page: 0 -> frame: 9
-===== PHYSICAL MEMORY AFTER READING =====
-================================================================
-Time slot  25
-	CPU 0: Put process  5 to run queue
-	CPU 0: Dispatched process  5 (Fixed Slice: 1)
 ===== PHYSICAL MEMORY AFTER DEALLOCATION =====
 PID=5 - Region=0 - Address=0 - Size=300 byte
 print_pgtbl: 0 - 512
@@ -193,6 +171,33 @@ print_pgtbl: 0 - 512
 Page Number: 0 -> Frame Number: 9
 Page Number: 1 -> Frame Number: 8
 ================================================================
-Time slot  26
+Time slot  22
 	CPU 0: Processed  5 has finished
+	CPU 0: Dispatched process  1 (Fixed Slice: 1)
+Time slot  23
+	CPU 0: Put process  1 to run queue
+	CPU 0: Dispatched process  1 (Fixed Slice: 1)
+===== PHYSICAL MEMORY AFTER WRITING =====
+Adress: 100
+Page: 0 -> frame: 1
+================================================================
+Time slot  24
+	CPU 0: Put process  1 to run queue
+	CPU 0: Dispatched process  1 (Fixed Slice: 1)
+Page: 0 -> frame: 1
+===== PHYSICAL MEMORY AFTER READING =====
+================================================================
+Time slot  25
+	CPU 0: Put process  1 to run queue
+	CPU 0: Dispatched process  1 (Fixed Slice: 1)
+===== PHYSICAL MEMORY AFTER DEALLOCATION =====
+PID=1 - Region=0 - Address=0 - Size=300 byte
+print_pgtbl: 0 - 512
+00000000: 80000001
+00000004: 80000000
+Page Number: 0 -> Frame Number: 1
+Page Number: 1 -> Frame Number: 0
+================================================================
+Time slot  26
+	CPU 0: Processed  1 has finished
 	CPU 0 stopped

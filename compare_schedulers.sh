@@ -31,7 +31,7 @@ cd ossim_sierra
 sed -i 's/\/\/ #define CFS_SCHED/#define CFS_SCHED/' include/os-cfg.h
 sed -i 's/#define MLQ_SCHED/\/\/ #define MLQ_SCHED/' include/os-cfg.h
 sed -i 's/\/\/ #define TEST_COMPARISON/#define TEST_COMPARISON/' include/os-cfg.h
-
+cat include/os-cfg.h
 # Build with CFS
 make clean
 make
@@ -49,13 +49,15 @@ echo "Testing MLQ Scheduler..."
 cd ossim_sierra
 # Switch to MLQ - disable CFS
 sed -i 's/#define CFS_SCHED/\/\/ #define CFS_SCHED/' include/os-cfg.h
-sed -i 's/\/\/ #define MLQ_SCHED/#define MLQ_SCHED/' include/os-cfg.h
+# Remove all existing MLQ_SCHED lines to avoid duplicates
+sed -i '/.*#define MLQ_SCHED.*/d' include/os-cfg.h
+# Add MLQ_SCHED definition at the top of the file, after the header guard
+sed -i '/#define OSCFG_H/a #define MLQ_SCHED 1' include/os-cfg.h
 sed -i 's/\/\/ #define TEST_COMPARISON/#define TEST_COMPARISON/' include/os-cfg.h
-
+cat include/os-cfg.h
 # Build with MLQ
 make clean
 make
-
 # Run tests
 echo "Running MLQ tests..."
 ./os scheduler_comparison.txt > "../${OUTPUT_DIR}/mlq_output.log"
@@ -75,4 +77,7 @@ echo "Generating visualization charts..."
 python3 ./visualize_comparison.py "${OUTPUT_DIR}/cfs_metrics.txt" "${OUTPUT_DIR}/mlq_metrics.txt" "${OUTPUT_DIR}/comparison_charts"
 
 echo "All tests complete!"
+# Make sure we're in the right directory for the final cleanup
+cd ossim_sierra 2>/dev/null || true
 sed -i 's/#define TEST_COMPARISON/\/\/ #define TEST_COMPARISON/' include/os-cfg.h
+cd ..

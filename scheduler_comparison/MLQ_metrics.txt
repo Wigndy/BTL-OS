@@ -1,14 +1,14 @@
 Processing log file: scheduler_comparison/mlq_output.log
 Maximum time slot found: 26
-PID 1: Load=0, Finish=6, Response=2, Turnaround=6, Wait=2
-PID 2: Load=1, Finish=11, Response=5, Turnaround=10, Wait=5
-PID 3: Load=3, Finish=16, Response=8, Turnaround=13, Wait=8
-PID 4: Load=5, Finish=21, Response=11, Turnaround=16, Wait=11
-PID 5: Load=7, Finish=26, Response=14, Turnaround=19, Wait=14
+PID 1: Load=0, Finish=26, Response=22, Turnaround=26, Wait=22
+PID 2: Load=1, Finish=17, Response=1, Turnaround=16, Wait=1
+PID 3: Load=2, Finish=19, Response=1, Turnaround=17, Wait=1
+PID 4: Load=3, Finish=21, Response=2, Turnaround=18, Wait=2
+PID 5: Load=4, Finish=22, Response=3, Turnaround=18, Wait=3
 
 SUMMARY:
 Total processes: 5
-Average wait time: 8.00 time units
-Average turnaround time: 12.80 time units
-Average response time: 8.00 time units
+Average wait time: 5.80 time units
+Average turnaround time: 19.00 time units
+Average response time: 5.80 time units
 Total time: 26 time units
