@@ -73,9 +73,9 @@ make clean
 make
 
 # Run specific tests
-./os input/cfs_test > ../output/cfs_output.log
-./os input/cfs_high_load > ../output/cfs_high_load.log
-./os input/cfs_full_niceness_range > ../output/cfs_niceness.log
+./os cfs_test > output/cfs_output.log
+./os cfs_high_load > output/cfs_high_load.log
+./os cfs_full_niceness_range > output/cfs_niceness.log
 ```
 
 ### Manual Testing with MLQ
@@ -89,7 +89,7 @@ make clean
 make
 
 # Run the same tests with MLQ scheduler
-./os input/cfs_test > ../output/mlq_output.log
+./os cfs_test > output/mlq_output.log
 ```
 
 ### Running Scheduler Comparison
