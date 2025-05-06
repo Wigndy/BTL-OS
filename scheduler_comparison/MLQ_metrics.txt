@@ -1,14 +1,20 @@
 Processing log file: scheduler_comparison/mlq_output.log
-Maximum time slot found: 26
-PID 1: Load=0, Finish=26, Response=22, Turnaround=26, Wait=22
-PID 2: Load=1, Finish=17, Response=1, Turnaround=16, Wait=1
-PID 3: Load=2, Finish=19, Response=1, Turnaround=17, Wait=1
-PID 4: Load=3, Finish=21, Response=2, Turnaround=18, Wait=2
-PID 5: Load=4, Finish=22, Response=3, Turnaround=18, Wait=3
+Maximum time slot found: 64
+PID 1: Load=0, Finish=64, Response=60, Turnaround=64, Wait=60
+PID 2: Load=1, Finish=27, Response=1, Turnaround=26, Wait=1
+PID 4: Load=3, Finish=40, Response=2, Turnaround=37, Wait=2
+PID 6: Load=5, Finish=47, Response=4, Turnaround=42, Wait=4
+PID 10: Load=9, Finish=54, Response=8, Turnaround=45, Wait=8
+PID 11: Load=10, Finish=55, Response=9, Turnaround=45, Wait=9
+PID 12: Load=11, Finish=56, Response=10, Turnaround=45, Wait=10
+PID 13: Load=12, Finish=57, Response=10, Turnaround=45, Wait=10
+PID 14: Load=13, Finish=58, Response=10, Turnaround=45, Wait=10
+PID 15: Load=14, Finish=59, Response=10, Turnaround=45, Wait=10
+PID 16: Load=15, Finish=60, Response=10, Turnaround=45, Wait=10
 
 SUMMARY:
-Total processes: 5
-Average wait time: 5.80 time units
-Average turnaround time: 19.00 time units
-Average response time: 5.80 time units
-Total time: 26 time units
+Total processes: 11
+Average wait time: 12.18 time units
+Average turnaround time: 44.00 time units
+Average response time: 12.18 time units
+Total time: 64 time units

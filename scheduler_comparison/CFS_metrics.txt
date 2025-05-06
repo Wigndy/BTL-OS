@@ -1,14 +1,25 @@
 Processing log file: scheduler_comparison/cfs_output.log
-Maximum time slot found: 26
-PID 1: Load=0, Finish=26, Response=22, Turnaround=26, Wait=22
-PID 2: Load=1, Finish=7, Response=1, Turnaround=6, Wait=1
-PID 3: Load=4, Finish=12, Response=3, Turnaround=8, Wait=3
-PID 4: Load=6, Finish=17, Response=6, Turnaround=11, Wait=6
-PID 5: Load=7, Finish=22, Response=10, Turnaround=15, Wait=10
+Maximum time slot found: 81
+PID 1: Load=0, Finish=71, Response=2, Turnaround=71, Wait=2
+PID 2: Load=2, Finish=8, Response=1, Turnaround=6, Wait=1
+PID 3: Load=4, Finish=13, Response=4, Turnaround=9, Wait=4
+PID 4: Load=6, Finish=73, Response=7, Turnaround=67, Wait=7
+PID 5: Load=7, Finish=75, Response=8, Turnaround=68, Wait=8
+PID 6: Load=10, Finish=41, Response=6, Turnaround=31, Wait=6
+PID 7: Load=12, Finish=57, Response=8, Turnaround=45, Wait=8
+PID 8: Load=14, Finish=43, Response=9, Turnaround=29, Wait=9
+PID 9: Load=16, Finish=77, Response=11, Turnaround=61, Wait=11
+PID 10: Load=17, Finish=79, Response=11, Turnaround=62, Wait=11
+PID 11: Load=19, Finish=81, Response=10, Turnaround=62, Wait=10
+PID 12: Load=22, Finish=58, Response=8, Turnaround=36, Wait=8
+PID 13: Load=27, Finish=59, Response=5, Turnaround=32, Wait=5
+PID 14: Load=29, Finish=60, Response=5, Turnaround=31, Wait=5
+PID 15: Load=31, Finish=61, Response=5, Turnaround=30, Wait=5
+PID 16: Load=35, Finish=62, Response=3, Turnaround=27, Wait=3
 
 SUMMARY:
-Total processes: 5
-Average wait time: 8.40 time units
-Average turnaround time: 13.20 time units
-Average response time: 8.40 time units
-Total time: 26 time units
+Total processes: 16
+Average wait time: 6.44 time units
+Average turnaround time: 41.69 time units
+Average response time: 6.44 time units
+Total time: 81 time units

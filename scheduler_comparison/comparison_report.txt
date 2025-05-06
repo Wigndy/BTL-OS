@@ -2,17 +2,15 @@
 
 | Metric               | CFS        | MLQ        | Difference    | Better    |
 |----------------------|------------|------------|--------------|-----------|
-| Average Wait Time    | 8.40      | 5.80      | 2.60 (31.0%) | MLQ     |
-| Average Turnaround   | 13.20      | 19.00      | 5.80 (30.5%) | CFS     |
-| Average Response     | 8.40      | 5.80      | 2.60 (31.0%) | MLQ     |
-| Total Runtime        | 26        | 26        | 0 (0.0%) | Tie     |
+| Average Wait Time    | 6.44      | 12.18      | 5.74 (47.1%) | CFS     |
+| Average Turnaround   | 41.69      | 44.00      | 2.31 (5.3%) | CFS     |
+| Average Response     | 6.44      | 12.18      | 5.74 (47.1%) | CFS     |
+| Total Runtime        | 81        | 64        | 17 (21.0%) | MLQ     |
 
 ===== ANALYSIS =====
 
-- MLQ provides better average waiting time
+- CFS provides better average waiting time
 - CFS provides better overall turnaround time
 
 Conclusions:
-- Results are mixed; scheduler choice depends on optimization goals:
-  * Choose CFS for better turnaround time
-  * Choose MLQ for better waiting time
+- CFS scheduler shows superior performance for this workload
