@@ -60,7 +60,7 @@
              printf("Process %s with PID: %2d is killed\n", proc_name, proc->pid);
              if (proc->running_list != NULL) {
                 remove_proc(proc->running_list, proc);
-                proc->running_list = NULL;
+                // proc->running_list = NULL;
                 proc->pc = proc->code->size;
              }
              else {
