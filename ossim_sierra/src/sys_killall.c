@@ -62,6 +62,7 @@
                 remove_proc(proc->running_list, proc);
                 // proc->running_list = NULL;
                 proc->pc = proc->code->size;
+                proc->ready_queue = NULL;
              }
              else {
                 remove_pcb(proc);

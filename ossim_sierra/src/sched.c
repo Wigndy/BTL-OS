@@ -239,7 +239,13 @@ void remove_pcb(struct pcb_t *proc) {
 	// pthread_mutex_lock(&queue_lock);
 
 	if (proc->running_list != NULL) {
-		remove_proc(proc->running_list, proc);
+		// Call from os.c -> ready queue != NULL -> need mutex lock
+		// Call from sys_killall.c -> ready queue == NULL -> dont need remove
+		if (proc->ready_queue != NULL) {
+			pthread_mutex_lock(&queue_lock);
+			remove_proc(proc->running_list, proc);
+			pthread_mutex_unlock(&queue_lock);	
+		} 
 	}
 	else {
 		#ifdef MLQ_SCHED
